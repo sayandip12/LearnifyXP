@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environment & Ecology Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #27ae60;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #27ae60;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #e8f8f0;
+            border-color: #27ae60;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .highlight {
+            font-weight: bold;
+            color: #27ae60;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Environment & Ecology Quiz</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. Which of the following is the most abundant greenhouse gas in Earth's atmosphere?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Carbon dioxide (CO₂)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Methane (CH₄)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Water vapor (H₂O)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Nitrous oxide (N₂O)
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. The 'Chipko Movement' was primarily associated with:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Water conservation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Forest conservation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Wildlife protection
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Air pollution control
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. Which international agreement aims to phase out ozone-depleting substances?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Kyoto Protocol
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Paris Agreement
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Montreal Protocol
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Basel Convention
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. The 'Red Data Book' is maintained by which organization?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> UNEP
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> IUCN
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> WWF
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> UNESCO
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. Which of the following is a primary pollutant?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Ozone (O₃)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Peroxyacetyl nitrate (PAN)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Sulfur dioxide (SO₂)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Smog
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. The 'Silent Valley' movement was aimed at protecting which ecosystem?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Desert ecosystem
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Tropical rainforest
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Mangrove forest
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Grassland ecosystem
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. The 'Project Tiger' was launched in which year?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> 1971
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> 1973
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> 1981
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> 1985
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. Which of the following is NOT a greenhouse gas?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Carbon dioxide (CO₂)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Methane (CH₄)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Oxygen (O₂)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Nitrous oxide (N₂O)
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. The 'Keystone species' concept was introduced by:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Charles Darwin
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Robert Paine
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> E.O. Wilson
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Rachel Carson
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. The 'Biological Diversity Act' in India was passed in:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> 1986
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> 1992
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> 2002
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> 2010
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. Which of the following is an example of ex-situ conservation?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> National Park
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Wildlife Sanctuary
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Biosphere Reserve
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Botanical Garden
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. The 'Tragedy of the Commons' concept was introduced by:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Garrett Hardin
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Paul Ehrlich
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Aldo Leopold
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> John Muir
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. Which of the following is NOT a Ramsar site in India?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Chilika Lake
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Keoladeo National Park
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Sundarbans
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Dal Lake
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. The 'Ecological Pyramid' concept was introduced by:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Charles Elton
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Arthur Tansley
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Eugene Odum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> G. Evelyn Hutchinson
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. Which of the following is India's first national park?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Jim Corbett National Park
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Kanha National Park
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Bandipur National Park
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Sundarbans National Park
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. The 'Narmada Bachao Andolan' was primarily concerned with:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Forest conservation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Wildlife protection
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Dam construction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Air pollution
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. The 'Greenhouse Effect' was first described by:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> John Tyndall
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Svante Arrhenius
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> James Lovelock
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Roger Revelle
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. Which of the following is NOT a component of the 'Ecological Footprint'?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Carbon footprint
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Built-up land
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Nuclear energy
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Fishing grounds
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. The 'National Green Tribunal' was established in India in:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> 1995
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> 2002
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> 2010
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> 2015
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. The 'Himalayan Yew' is a source of which important anti-cancer drug?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Quinine
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Taxol
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Vincristine
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Artemisinin
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://youtu.be/k_sYIs8C-IQ?si=O8Re0qjZlDsaVHgY" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Environment & Ecology Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('ecologyCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('ecologyCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'c', q2: 'b', q3: 'c', q4: 'b', q5: 'c',
+                q6: 'b', q7: 'b', q8: 'c', q9: 'b', q10: 'c',
+                q11: 'd', q12: 'a', q13: 'd', q14: 'a', q15: 'a',
+                q16: 'c', q17: 'b', q18: 'c', q19: 'c', q20: 'b'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Water vapor is the most abundant greenhouse gas, accounting for about 60% of the natural greenhouse effect. However, human activities primarily affect CO₂, CH₄, and N₂O concentrations.",
+                q2: "The Chipko Movement (1973) was a forest conservation movement where people hugged trees to prevent logging in Uttarakhand (then Uttar Pradesh).",
+                q3: "The Montreal Protocol (1987) successfully phased out CFCs and other ozone-depleting substances, helping the ozone layer recover.",
+                q4: "The IUCN (International Union for Conservation of Nature) maintains the Red Data Book which documents endangered species.",
+                q5: "Sulfur dioxide is emitted directly from sources (primary pollutant), while ozone, PAN and smog form through chemical reactions (secondary pollutants).",
+                q6: "Silent Valley in Kerala is a tropical rainforest that was saved from being flooded by a hydroelectric project due to environmental activism in the 1970s-80s.",
+                q7: "Project Tiger was launched in 1973 to protect Bengal tigers. India now has 54 tiger reserves (as of 2023).",
+                q8: "Oxygen (O₂) is not a greenhouse gas. The main greenhouse gases are water vapor, CO₂, CH₄, N₂O, and ozone.",
+                q9: "Robert Paine introduced the concept in 1969 through his studies of starfish in tidal pools, showing how one species can have disproportionate ecosystem impact.",
+                q10: "The Biological Diversity Act (2002) implements India's commitments under the UN Convention on Biological Diversity (1992).",
+                q11: "Botanical gardens are ex-situ (off-site) conservation, while national parks, sanctuaries and biosphere reserves are in-situ (on-site) conservation methods.",
+                q12: "Garrett Hardin's 1968 paper described how individuals acting independently in their own self-interest can ultimately destroy a shared resource.",
+                q13: "Dal Lake in Jammu & Kashmir is not a Ramsar site, though it's an important wetland. India has 75 Ramsar sites as of 2023.",
+                q14: "Charles Elton introduced ecological pyramids in his 1927 book 'Animal Ecology', showing energy flow through trophic levels.",
+                q15: "Established in 1936 as Hailey National Park, it was renamed in 1957 after Jim Corbett, the famous conservationist.",
+                q16: "Narmada Bachao Andolan, led by Medha Patkar, opposed large dams on the Narmada river due to displacement and environmental concerns.",
+                q17: "Svante Arrhenius (1896) first calculated how CO₂ could cause global warming, though John Tyndall had earlier identified greenhouse gases.",
+                q18: "Nuclear energy is not included in ecological footprint calculations, which measure demand on biological resources (cropland, grazing land, etc.).",
+                q19: "NGT was established under the National Green Tribunal Act (2010) for effective disposal of environmental protection cases.",
+                q20: "Taxol (from Taxus wallichiana) treats ovarian, breast and lung cancers. Overharvesting has made this Himalayan tree endangered."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered Environment & Ecology!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most environmental concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial for better clarity.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial to improve your knowledge.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#e8f8f0';
+                    this.style.borderColor = '#27ae60';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Quiz - Current Electricity</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e74c3c;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #e74c3c;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #fdedec;
+            border-color: #e74c3c;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fce8e6;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Physics Quiz - Current Electricity</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is the SI unit of electric current?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Coulomb
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Volt
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Ampere
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Ohm
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. Ohm's Law states that:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> I = V/R
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> V = IR
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> R = V/I
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. The resistance of a conductor depends on:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Length
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Cross-sectional area
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Material
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. The resistivity of a material is measured in:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Ohm
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Ohm-meter
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Ohm/meter
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Volt-ampere
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. In a series combination of resistors, the current through each resistor is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Different
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Same
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Proportional to resistance
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Inversely proportional to resistance
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. The equivalent resistance of two 4Ω resistors in parallel is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> 8Ω
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> 4Ω
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> 2Ω
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> 1Ω
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. Kirchhoff's current law is based on conservation of:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Energy
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Charge
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Momentum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> Mass
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. The power dissipated in a resistor is given by:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> P = IV
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> P = I²R
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> P = V²/R
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. The internal resistance of an ideal voltage source is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Infinite
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Equal to load resistance
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Variable
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. The Wheatstone bridge is balanced when:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Current through galvanometer is zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> P/Q = R/S
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Potential difference across galvanometer is zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. The drift velocity of electrons in a conductor is typically in the range of:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> 10⁻³ m/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> 10⁻⁶ m/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> 10⁻⁹ m/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> 10⁻¹² m/s
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. The temperature coefficient of resistance for metals is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Positive
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Negative
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> Sometimes positive, sometimes negative
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. The potential difference across a 5Ω resistor carrying 2A current is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> 2.5V
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> 5V
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> 10V
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> 20V
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. A potentiometer is preferred over a voltmeter for measuring emf because:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> It draws current from the circuit
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> It doesn't draw current from the circuit
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> It has higher resistance
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> It can measure AC voltage
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. The resistance of a wire is R. If its length is doubled and area halved, the new resistance will be:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> R
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> 2R
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> 4R
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> R/2
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. The color code for a 1kΩ resistor with 5% tolerance is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Brown-Black-Red-Gold
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Brown-Black-Orange-Gold
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Brown-Black-Red-Silver
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Red-Black-Brown-Gold
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. The current density J is related to drift velocity v<sub>d</sub> by:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> J = nev<sub>d</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> J = ne/v<sub>d</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> J = v<sub>d</sub>/ne
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> J = nv<sub>d</sub>/e
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. A 100W-220V bulb and a 60W-220V bulb are connected in series to 220V supply. Which bulb glows brighter?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> 100W bulb
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> 60W bulb
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Both glow equally
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Neither glows
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. The resistivity of a semiconductor with temperature:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Increases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Decreases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Remains constant
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> First increases then decreases
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. In a meter bridge experiment, the balance point is obtained at 40cm from the left end. The unknown resistance is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> 0.67 times the known resistance
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> 1.5 times the known resistance
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Equal to the known resistance
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Cannot be determined
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/watch?v=example" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Current Electricity Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('physicsCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('physicsCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'c', q2: 'd', q3: 'd', q4: 'b', q5: 'b',
+                q6: 'c', q7: 'b', q8: 'd', q9: 'b', q10: 'd',
+                q11: 'b', q12: 'a', q13: 'c', q14: 'b', q15: 'c',
+                q16: 'a', q17: 'a', q18: 'b', q19: 'b', q20: 'a'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "The ampere (A) is the SI base unit of electric current, defined as the flow of 1 coulomb of charge per second.",
+                q2: "Ohm's law can be expressed as V=IR, I=V/R, or R=V/I - all are mathematically equivalent forms.",
+                q3: "Resistance R = ρL/A depends on resistivity (ρ), length (L), and cross-sectional area (A).",
+                q4: "Resistivity (ρ) has units of ohm-meter (Ω·m) from the formula R = ρL/A.",
+                q5: "In series circuits, current is the same through all components (conservation of charge).",
+                q6: "Parallel resistors: 1/R_eq = 1/R₁ + 1/R₂ ⇒ R_eq = (4×4)/(4+4) = 2Ω.",
+                q7: "Kirchhoff's current law (junction rule) states that total current entering a junction equals total current leaving (charge conservation).",
+                q8: "Power can be calculated as P=VI, P=I²R, or P=V²/R depending on known quantities.",
+                q9: "Ideal voltage sources maintain constant voltage regardless of current drawn (zero internal resistance).",
+                q10: "Wheatstone bridge is balanced when P/Q = R/S, causing zero current through galvanometer (V=0).",
+                q11: "Drift velocity is surprisingly slow, typically ~10⁻⁴ m/s for copper wires (electrons collide frequently).",
+                q12: "Metal resistance increases with temperature as lattice vibrations scatter electrons more effectively.",
+                q13: "V = IR = 2A × 5Ω = 10V (Ohm's law).",
+                q14: "Potentiometer is a null measurement device that draws no current at balance point (unlike voltmeters).",
+                q15: "R = ρL/A → R' = ρ(2L)/(A/2) = 4ρL/A = 4R.",
+                q16: "Brown(1)-Black(0)-Red(10²)-Gold(5%) = 10×10² = 1000Ω = 1kΩ with 5% tolerance.",
+                q17: "Current density J = I/A = n e v_d (n = charge carrier density, e = electron charge).",
+                q18: "60W bulb has higher resistance (P=V²/R ⇒ R=V²/P), so in series it gets more voltage drop and power.",
+                q19: "Semiconductor resistivity decreases with temperature as more charge carriers are thermally excited.",
+                q20: "Meter bridge: R_unknown/R_known = L/(100-L) = 40/60 = 2/3 ≈ 0.67."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered current electricity!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most circuit concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#fdedec';
+                    this.style.borderColor = '#e74c3c';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

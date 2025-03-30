@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Security Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #c0392b;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #c0392b;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #fdedec;
+            border-color: #c0392b;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #c0392b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #a93226;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .highlight {
+            font-weight: bold;
+            color: #c0392b;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Internal Security Quiz</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. Which agency is India's primary external intelligence agency?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Intelligence Bureau (IB)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Research and Analysis Wing (RAW)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Central Bureau of Investigation (CBI)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> National Investigation Agency (NIA)
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. The Armed Forces (Special Powers) Act was first enacted in which year?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> 1947
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> 1958
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> 1971
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> 1980
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. Which of these is NOT a Left Wing Extremism affected state in India?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Chhattisgarh
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Jharkhand
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Kerala
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Odisha
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. The National Investigation Agency was established after which incident?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> 1993 Mumbai blasts
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> 2001 Parliament attack
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> 2008 Mumbai attacks
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> 2016 Pathankot attack
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. Which of these is India's first dedicated coastal security exercise?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Operation Vijay
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Operation Parakram
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Operation Sagar Kavach
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Operation Blue Star
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. The 'Unlawful Activities (Prevention) Act' was originally enacted in:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> 1967
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> 1975
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> 1984
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> 2001
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. Which security force is primarily responsible for border guarding along Pakistan border?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Assam Rifles
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Border Security Force (BSF)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Sashastra Seema Bal (SSB)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> Indo-Tibetan Border Police (ITBP)
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. The 'Greyhound Force' is a special anti-Naxal unit of which state?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Andhra Pradesh
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Chhattisgarh
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Jharkhand
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Odisha
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. India's cybersecurity nodal agency is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> CERT-In
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> NCIIPC
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> NTRO
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> DRDO
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. The 'Multi-Agency Centre' operates under which organization?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Intelligence Bureau (IB)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Research and Analysis Wing (RAW)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> National Security Council (NSC)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> Central Bureau of Investigation (CBI)
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. The 'Sovereign Gold Bond Scheme' is primarily aimed at:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Curbing black money
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Reducing gold imports
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Financing infrastructure projects
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Promoting digital payments
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. Which of these is NOT a paramilitary force in India?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Assam Rifles
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Central Reserve Police Force (CRPF)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Rapid Action Force (RAF)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> National Security Guard (NSG)
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. The 'Narcotics Control Bureau' was established under which Act?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> NDPS Act, 1985
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> IPC Section 420
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Prevention of Corruption Act
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Customs Act, 1962
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. The 'National Counter Terrorism Centre' (NCTC) was proposed based on whose recommendation?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Kargil Review Committee
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Justice Verma Committee
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> N.N. Vohra Committee
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Second Administrative Reforms Commission
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. The 'Financial Intelligence Unit - India' operates under which ministry?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Ministry of Finance
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Ministry of Home Affairs
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Ministry of Corporate Affairs
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Ministry of External Affairs
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. The 'SMART Police' initiative stands for:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Strict and Modern Approach for Responsive Technology
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Smart Monitoring and Result-oriented Tracking
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Strict and Sensitive, Modern and Mobile, Alert and Accountable, Reliable and Responsive, Techno-savvy and Trained
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Security Management and Advanced Response Team
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. The 'Cyber Swachhta Kendra' is an initiative for:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Cybercrime investigation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Malware analysis
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Botnet cleaning
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Digital literacy
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. The 'National Critical Information Infrastructure Protection Centre' protects:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Military installations
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Power plants and grids
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Digital assets vital to national security
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. The 'Black Cat Commandos' refer to personnel of:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> NSG
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> PARA SF
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Marcos
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> CRPF COBRA
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. The 'Defence Cyber Agency' was established in:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> 2010
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> 2015
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> 2019
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> 2021
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://youtu.be/sgMj_k6BJ84?si=XTozSw6bmisq8b8S" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Internal Security Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('securityCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('securityCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'b', q3: 'c', q4: 'c', q5: 'c',
+                q6: 'a', q7: 'b', q8: 'a', q9: 'a', q10: 'a',
+                q11: 'b', q12: 'd', q13: 'a', q14: 'a', q15: 'a',
+                q16: 'c', q17: 'c', q18: 'd', q19: 'a', q20: 'c'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "RAW (Research and Analysis Wing) handles external intelligence, while IB focuses on domestic intelligence.",
+                q2: "AFSPA was first enacted in 1958 for Northeast, later extended to other disturbed areas.",
+                q3: "Kerala has minimal Naxal presence compared to the 'Red Corridor' states (Chhattisgarh, Jharkhand, Odisha).",
+                q4: "NIA was established in 2009 after the 26/11 Mumbai attacks revealed gaps in terror investigation.",
+                q5: "Operation Sagar Kavach (2005) tests coastal security preparedness involving Navy, Coast Guard, and police.",
+                q6: "UAPA was enacted in 1967, amended several times (2004, 2008, 2012, 2019) to strengthen anti-terror provisions.",
+                q7: "BSF guards Pakistan (2,900km) and Bangladesh (4,096km) borders, while ITBP covers China border.",
+                q8: "Andhra's Greyhounds (1989) are elite commandos credited with reducing Naxalism in the state.",
+                q9: "CERT-In (Indian Computer Emergency Response Team) is the national agency for cybersecurity under MeitY.",
+                q10: "MAC (Multi-Agency Centre) under IB coordinates intelligence sharing among 28 agencies post-26/11.",
+                q11: "SGB Scheme (2015) aims to reduce gold imports (2nd largest import after oil) that strain current account.",
+                q12: "NSG is a special forces unit, not paramilitary. India has 5 paramilitary forces under MHA.",
+                q13: "NCB was created under NDPS Act (Narcotic Drugs and Psychotropic Substances Act, 1985).",
+                q14: "NCTC was proposed post-Kargil War (1999) to improve intelligence coordination, but faces state resistance.",
+                q15: "FIU-IND (2004) under Finance Ministry analyzes suspicious financial transactions to combat money laundering.",
+                q16: "SMART Police (2014) emphasizes humane, professional policing with technology integration.",
+                q17: "Cyber Swachhta Kendra (2017) provides free tools to remove malware and secure systems.",
+                q18: "NCIIPC protects critical infrastructure like power, banking, telecom, transport that could cripple nation if compromised.",
+                q19: "NSG (National Security Guard) commandos wear black uniforms and handle counter-terror/hijack operations.",
+                q20: "Defence Cyber Agency (2019) is a tri-service command protecting military networks from cyber attacks."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered Internal Security concepts!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most security frameworks and agencies.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial for better clarity.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial to improve your knowledge.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#fdedec';
+                    this.style.borderColor = '#c0392b';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

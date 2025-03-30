@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Quiz - Organic Chemistry</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #27ae60;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #27ae60;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #e8f8f0;
+            border-color: #27ae60;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Chemistry Quiz - Organic Chemistry</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is the general formula for alkanes?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> C<sub>n</sub>H<sub>2n</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> C<sub>n</sub>H<sub>2n+2</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> C<sub>n</sub>H<sub>2n-2</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> C<sub>n</sub>H<sub>2n+1</sub>OH
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. Which functional group is present in carboxylic acids?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> -OH
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> -CHO
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> -COOH
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> -COOR
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. What is the IUPAC name of CH<sub>3</sub>-CH<sub>2</sub>-CH<sub>2</sub>-CH<sub>3</sub>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Methane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Ethane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Propane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Butane
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. Which type of isomerism is shown by compounds with the same molecular formula but different structural arrangements?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Geometric isomerism
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Structural isomerism
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Optical isomerism
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Tautomerism
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. What is the product when ethanol undergoes complete oxidation?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Ethanal
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Ethanoic acid
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Ethene
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Ethane
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. Which reagent is used to test for unsaturation in organic compounds?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Fehling's solution
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Tollen's reagent
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Bromine water
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Schiff's reagent
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. What is the hybridisation of carbon in ethyne (C<sub>2</sub>H<sub>2</sub>)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> sp
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> sp<sup>2</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> sp<sup>3</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> dsp<sup>2</sup>
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. Which of the following is an example of nucleophilic substitution reaction?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> CH<sub>4</sub> + Cl<sub>2</sub> → CH<sub>3</sub>Cl + HCl
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> CH<sub>3</sub>CH<sub>2</sub>Br + OH<sup>-</sup> → CH<sub>3</sub>CH<sub>2</sub>OH + Br<sup>-</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> C<sub>2</sub>H<sub>4</sub> + H<sub>2</sub> → C<sub>2</sub>H<sub>6</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> C<sub>6</sub>H<sub>6</sub> + HNO<sub>3</sub> → C<sub>6</sub>H<sub>5</sub>NO<sub>2</sub> + H<sub>2</sub>O
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. What is the product of the reaction between an alcohol and a carboxylic acid?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Aldehyde
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Ketone
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Ester
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Ether
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. Which compound shows geometric (cis-trans) isomerism?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> CH<sub>3</sub>-CH<sub>3</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> CH<sub>2</sub>=CH<sub>2</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> CH<sub>3</sub>-CH=CH-CH<sub>3</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> CH≡CH
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. What is the name of the reaction when an alkyl halide reacts with sodium in dry ether?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Wurtz reaction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Friedel-Crafts reaction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Grignard reaction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Cannizzaro reaction
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. Which test distinguishes between aldehydes and ketones?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Iodoform test
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Fehling's test
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Bromine water test
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> Lucas test
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. What is the product when benzene reacts with chlorine in the presence of sunlight?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Chlorobenzene
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Benzene hexachloride
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Cyclohexane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> No reaction
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. Which of the following is an aromatic compound?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Cyclohexane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Benzene
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Ethene
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Ethyne
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. What is the IUPAC name of CH<sub>3</sub>-CH<sub>2</sub>-CH(OH)-CH<sub>3</sub>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Propan-1-ol
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Butan-1-ol
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Butan-2-ol
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Propan-2-ol
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. Which of the following is a characteristic of SN2 reactions?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Two-step mechanism
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Formation of carbocation intermediate
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Bimolecular rate-determining step
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Racemization of product
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. What is the product of the reduction of a nitrile?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Amine
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Amide
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Aldehyde
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Carboxylic acid
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. Which reagent converts alcohols to alkyl halides?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> PCl<sub>5</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> KMnO<sub>4</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Fehling's solution
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Tollen's reagent
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. What is the name of the reaction when an aldehyde reacts with itself in the presence of concentrated alkali?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Aldol condensation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Cannizzaro reaction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Perkin reaction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Claisen condensation
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. Which of the following is the most acidic?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> CH<sub>4</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> CH<sub>3</sub>OH
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> CH<sub>3</sub>COOH
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> C<sub>6</sub>H<sub>5</sub>OH
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/live/2yqATNvE5UM?si=GxjQSU34tge8OVe0" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Organic Chemistry Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('chemistryCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('chemistryCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'c', q3: 'd', q4: 'b', q5: 'b',
+                q6: 'c', q7: 'a', q8: 'b', q9: 'c', q10: 'c',
+                q11: 'a', q12: 'b', q13: 'b', q14: 'b', q15: 'c',
+                q16: 'c', q17: 'a', q18: 'a', q19: 'b', q20: 'c'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Alkanes have the general formula C<sub>n</sub>H<sub>2n+2</sub> as they are saturated hydrocarbons.",
+                q2: "Carboxylic acids contain the -COOH functional group (carboxyl group).",
+                q3: "CH<sub>3</sub>-CH<sub>2</sub>-CH<sub>2</sub>-CH<sub>3</sub> is butane with 4 carbon atoms.",
+                q4: "Structural isomerism occurs when compounds have the same molecular formula but different connectivity.",
+                q5: "Complete oxidation of ethanol produces ethanoic acid (CH<sub>3</sub>COOH).",
+                q6: "Bromine water (Br<sub>2</sub>) decolorizes when it reacts with unsaturated compounds.",
+                q7: "Ethyne (C<sub>2</sub>H<sub>2</sub>) has sp hybridized carbon atoms forming a triple bond.",
+                q8: "CH<sub>3</sub>CH<sub>2</sub>Br + OH<sup>-</sup> → CH<sub>3</sub>CH<sub>2</sub>OH + Br<sup>-</sup> is a nucleophilic substitution where OH<sup>-</sup> replaces Br<sup>-</sup>.",
+                q9: "Alcohol + carboxylic acid → ester + water (esterification reaction).",
+                q10: "CH<sub>3</sub>-CH=CH-CH<sub>3</sub> shows cis-trans isomerism due to restricted rotation around the double bond.",
+                q11: "Wurtz reaction: 2R-X + 2Na → R-R + 2NaX (forms a new C-C bond).",
+                q12: "Fehling's test distinguishes aldehydes (positive) from ketones (negative).",
+                q13: "Benzene + Cl<sub>2</sub> (sunlight) undergoes addition to form benzene hexachloride (BHC).",
+                q14: "Benzene is aromatic with a conjugated π-electron system following Hückel's rule (4n+2 π electrons).",
+                q15: "CH<sub>3</sub>-CH<sub>2</sub>-CH(OH)-CH<sub>3</sub> is butan-2-ol (OH on carbon 2 of a 4-carbon chain).",
+                q16: "SN2 reactions have a bimolecular rate-determining step (rate depends on both reactants).",
+                q17: "R-CN + 4[H] → R-CH<sub>2</sub>-NH<sub>2</sub> (reduction of nitrile to primary amine).",
+                q18: "PCl<sub>5</sub> converts R-OH → R-Cl (replaces -OH with -Cl).",
+                q19: "Cannizzaro reaction: 2RCHO (no α-H) + conc. NaOH → RCOONa + RCH<sub>2</sub>OH.",
+                q20: "CH<sub>3</sub>COOH (acetic acid) is the strongest acid among these due to resonance stabilization of its conjugate base."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered Organic Chemistry!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most organic concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#e8f8f0';
+                    this.style.borderColor = '#27ae60';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

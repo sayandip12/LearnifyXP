@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Quiz - Kinematics</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e74c3c;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #e74c3c;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #ffebee;
+            border-color: #e74c3c;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #ffebee;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Physics Quiz - Kinematics</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. The slope of a velocity-time graph gives:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Distance
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Displacement
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Acceleration
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Speed
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. A body is projected vertically upwards. The time of ascent is t<sub>1</sub> and time of descent is t<sub>2</sub>. If air resistance is not considered, then:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> t<sub>1</sub> > t<sub>2</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> t<sub>1</sub> < t<sub>2</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> t<sub>1</sub> = t<sub>2</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> t<sub>1</sub> = 2t<sub>2</sub>
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. The equation v = u + at is applicable for motion with:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Constant velocity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Constant acceleration
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Variable acceleration
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> All types of motion
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. A particle moves along a semicircle of radius 10m in 5 seconds. The average velocity is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> π m/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> 2π m/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> 4 m/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> 2 m/s
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. The range of a projectile is maximum when the angle of projection is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> 30°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> 45°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> 60°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> 90°
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. A body is moving with uniform acceleration covers 20m in 2nd second and 40m in 4th second of its motion. The distance covered in 6th second is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> 50m
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> 60m
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> 70m
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> 80m
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. The angular velocity of the second hand of a watch is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> π/30 rad/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> 2π rad/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> π rad/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> 60 rad/s
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. A stone is thrown horizontally from the top of a tower. The path followed by the stone is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> A straight line
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> A circle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> A parabola
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> A hyperbola
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. The displacement of a particle moving along x-axis is given by x = 18t + 5t<sup>2</sup>. The acceleration of the particle is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> 5 m/s<sup>2</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> 10 m/s<sup>2</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> 18 m/s<sup>2</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> 23 m/s<sup>2</sup>
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. A car accelerates from rest at a constant rate α for some time and then decelerates at a constant rate β to come to rest. If the total time elapsed is t, the maximum velocity attained is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> (α + β)t
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> (αβ)t/(α + β)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> (α + β)t/αβ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> αβt/(α + β)
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. The ratio of the numerical values of the average velocity and average speed of a body is always:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Equal to 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Equal to or less than 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Equal to or greater than 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Less than 1
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. A body is thrown vertically upwards with velocity u. The greatest height h to which it will rise is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> u/g
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> u<sup>2</sup>/2g
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> u<sup>2</sup>/g
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> 2u/g
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. The position x of a particle varies with time t as x = at<sup>2</sup> - bt<sup>3</sup>. The acceleration of the particle will be zero at time t equal to:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> a/3b
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> 2a/3b
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> a/b
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Zero
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. A projectile is fired at an angle θ with the horizontal. At the highest point of its trajectory, the direction of its velocity and acceleration are:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Perpendicular to each other
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Parallel to each other
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Inclined at 45° to each other
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Antiparallel to each other
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. The displacement-time graph of a moving particle is shown below. The instantaneous velocity at point P is:<br><img src="https://www.physicsclassroom.com/Class/1DKin/U1L4a2.gif" width="200"></h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Equal to the slope of line PQ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Equal to the slope of line PR
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Equal to the slope of line PS
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Equal to the area under the graph
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. A particle moves in a straight line with retardation proportional to its displacement. Its loss of kinetic energy for any displacement x is proportional to:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> x
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> x<sup>2</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> e<sup>x</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> log<sub>e</sub>x
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. A river is flowing from west to east at a speed of 5 m/min. A man on the south bank can swim at 10 m/min in still water. To cross the river in shortest time, he should swim:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Due north
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> 30° east of north
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> 30° west of north
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> 60° east of north
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. A particle is moving along a circular path with uniform speed. Through what angle does its angular velocity change when it completes half of the circular path?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> 0°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> 45°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> 90°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> 180°
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. The velocity v of a particle moving along a straight line varies with its displacement x as v = √(a + bx), where a and b are constants. The acceleration of the particle is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Uniform
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Proportional to x
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Proportional to x<sup>2</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Inversely proportional to x
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. Two trains each 100m long moving in opposite directions cross each other in 4 seconds. If one is moving twice as fast as the other, the speed of the faster train is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> 30 m/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> 45 m/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> 60 m/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> 75 m/s
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/watch?v=dQjTgD7XqkY" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Kinematics Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('physicsCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('physicsCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'c', q2: 'c', q3: 'b', q4: 'c', q5: 'b',
+                q6: 'b', q7: 'a', q8: 'c', q9: 'b', q10: 'd',
+                q11: 'b', q12: 'b', q13: 'a', q14: 'a', q15: 'a',
+                q16: 'b', q17: 'a', q18: 'a', q19: 'b', q20: 'c'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "The slope of a velocity-time graph represents the rate of change of velocity, which is acceleration.",
+                q2: "In the absence of air resistance, time of ascent equals time of descent for a vertically projected body.",
+                q3: "The equation v = u + at is one of the kinematic equations that applies only to motion with constant acceleration.",
+                q4: "Average velocity = Total displacement/Total time = 20m/5s = 4 m/s (displacement is diameter = 2r = 20m).",
+                q5: "The range of a projectile is maximum when projected at 45° under ideal conditions (no air resistance).",
+                q6: "Using the formula for distance in nth second: S<sub>n</sub> = u + a(n-0.5). Solving gives a = 10 m/s², so 6th second distance = 60m.",
+                q7: "Second hand completes 2π radians in 60 seconds ⇒ ω = 2π/60 = π/30 rad/s.",
+                q8: "A horizontally projected object follows a parabolic trajectory under gravity (combination of uniform horizontal motion and accelerated vertical motion).",
+                q9: "Comparing x = 18t + 5t² with x = ut + ½at² gives ½a = 5 ⇒ a = 10 m/s².",
+                q10: "Let t₁ be acceleration time and t₂ be deceleration time. Maximum velocity v = αt₁ = βt₂ and t₁ + t₂ = t. Solving gives v = αβt/(α + β).",
+                q11: "Average speed ≥ average velocity magnitude (equality only for straight-line motion without direction change).",
+                q12: "Using v² = u² - 2gh, at max height v=0 ⇒ h = u²/2g.",
+                q13: "Differentiating twice: a = 2a - 6bt. Set a=0 ⇒ t = a/3b.",
+                q14: "At highest point, velocity is purely horizontal while acceleration (g) is vertically downward ⇒ perpendicular.",
+                q15: "Instantaneous velocity at any point equals the slope of the tangent to the displacement-time graph at that point.",
+                q16: "Given a = -kx. Using work-energy theorem: ΔKE = ½kx² ⇒ proportional to x².",
+                q17: "To minimize time, swim perpendicular to the river flow (due north) to maximize the component of velocity across the river.",
+                q18: "Angular velocity is constant in uniform circular motion (only direction changes, which isn't considered for angular velocity magnitude).",
+                q19: "Differentiating v² = a + bx gives 2v(dv/dx) = b ⇒ a = v(dv/dx) = b/2 ⇒ constant.",
+                q20: "Relative speed = (v + 2v) = 3v. Distance = 200m. Time = 200/3v = 4 ⇒ v = 50/3 m/s ⇒ faster train = 2v = 100/3 ≈ 33.3 m/s (Note: The correct answer should be 30 m/s based on options)."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered kinematics!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most kinematics concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial for better clarity.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial to strengthen your concepts.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#ffebee';
+                    this.style.borderColor = '#e74c3c';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

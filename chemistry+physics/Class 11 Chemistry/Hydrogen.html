@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Quiz - Hydrogen</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #ebf5fb;
+            border-color: #3498db;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Chemistry Quiz - Hydrogen</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is the atomic number of hydrogen?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> 0
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> 3
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. Which of the following is the lightest element in the periodic table?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Helium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Hydrogen
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Lithium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Oxygen
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. What is the most abundant isotope of hydrogen?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Protium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Deuterium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Tritium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Quadrium
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. What type of bond holds two hydrogen atoms together in H<sub>2</sub>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Ionic bond
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Covalent bond
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Metallic bond
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Hydrogen bond
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. Which of the following is NOT a property of hydrogen?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Colorless
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Odorless
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Tasteless
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Magnetic
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. What is the position of hydrogen in the periodic table?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Group 1 (Alkali metals)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Group 17 (Halogens)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Both Group 1 and Group 17
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Unique position (doesn't belong to any group)
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. Which isotope of hydrogen is radioactive?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Protium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Deuterium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Tritium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> None of these
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. What is the oxidation state of hydrogen in most of its compounds?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> +1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> -1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> 0
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> +2
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. Which of the following is known as "heavy water"?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> H<sub>2</sub>O with deuterium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> H<sub>2</sub>O with tritium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> H<sub>2</sub>O<sub>2</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Concentrated water
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. What is the product when hydrogen burns in oxygen?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Hydrogen peroxide
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Water
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Ozone
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> Hydroxide ion
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. Which process is used commercially to produce hydrogen gas?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Electrolysis of water
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Steam reforming of natural gas
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Reaction of acids with metals
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. What is the oxidation state of hydrogen in metal hydrides?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> +1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> -1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> 0
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> +2
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. Which of the following is NOT a use of hydrogen?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Rocket fuel
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Hydrogenation of oils
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Production of ammonia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Construction material
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. What is the name of H<sup>-</sup> ion?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Proton
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Hydride
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Hydroxide
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Hydrogen ion
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. Which of the following statements about hydrogen is true?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> It's the most abundant element in the universe
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> It's the most abundant element in Earth's crust
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> It's a noble gas
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> It's a metal
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. What is the main component of the Sun?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Helium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Hydrogen
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Oxygen
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Carbon
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. What is the process called when hydrogen ions combine to form helium in stars?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Fission
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Fusion
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Combustion
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Oxidation
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. Which of the following is a potential future use of hydrogen?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Fuel for vehicles
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Energy storage
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Both a and b
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Neither a nor b
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. What is the name of the hydrogen isotope with one proton and one neutron?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Protium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Deuterium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Tritium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Quadrium
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. What is the main challenge in using hydrogen as a fuel?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Its low energy content
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Difficulty in storage and transportation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Its radioactivity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Its high cost of production
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://youtu.be/FdmETHB1mjE?si=iUY5UM630cxb1aFG" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Hydrogen Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('chemistryCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('chemistryCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'b', q3: 'a', q4: 'b', q5: 'd',
+                q6: 'd', q7: 'c', q8: 'a', q9: 'a', q10: 'b',
+                q11: 'b', q12: 'b', q13: 'd', q14: 'b', q15: 'a',
+                q16: 'b', q17: 'b', q18: 'c', q19: 'b', q20: 'b'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Hydrogen has atomic number 1, meaning it has 1 proton in its nucleus.",
+                q2: "Hydrogen is the lightest element with an atomic weight of approximately 1.008.",
+                q3: "Protium (¹H) makes up about 99.98% of naturally occurring hydrogen.",
+                q4: "H<sub>2</sub> forms through a covalent bond where two hydrogen atoms share one pair of electrons.",
+                q5: "Hydrogen is colorless, odorless, tasteless, but it is not magnetic.",
+                q6: "Hydrogen has unique properties and doesn't fit perfectly into any group, though it's often placed above Group 1.",
+                q7: "Tritium (³H) is radioactive with a half-life of about 12.3 years.",
+                q8: "Hydrogen typically shows +1 oxidation state, except in metal hydrides where it's -1.",
+                q9: "Heavy water (D<sub>2</sub>O) contains deuterium atoms instead of protium.",
+                q10: "2H<sub>2</sub> + O<sub>2</sub> → 2H<sub>2</sub>O is the combustion reaction of hydrogen.",
+                q11: "Steam reforming of methane (natural gas) is the most economical method for large-scale hydrogen production.",
+                q12: "In metal hydrides (like NaH), hydrogen has a -1 oxidation state.",
+                q13: "Hydrogen is not used as a construction material due to its gaseous nature at standard conditions.",
+                q14: "H<sup>-</sup> is called hydride ion, formed when hydrogen gains an electron.",
+                q15: "Hydrogen constitutes about 75% of the elemental mass of the universe.",
+                q16: "The Sun is about 70% hydrogen by mass, which fuels nuclear fusion reactions.",
+                q17: "Nuclear fusion of hydrogen to form helium powers stars and releases enormous energy.",
+                q18: "Hydrogen fuel cells and hydrogen storage are promising clean energy technologies.",
+                q19: "Deuterium (²H) has one proton and one neutron, while protium has no neutrons.",
+                q20: "Hydrogen's low density makes storage and transportation challenging despite its high energy content."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered hydrogen chemistry!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most hydrogen concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#ebf5fb';
+                    this.style.borderColor = '#3498db';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Structures Quiz - Stacks</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #ebf5fb;
+            border-color: #3498db;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #e67e22;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #d35400;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .code {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Data Structures Quiz - Stacks</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. Which principle does a stack follow?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> First In First Out (FIFO)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Last In First Out (LIFO)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> First In Last Out (FILO)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Random Access
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. What is the time complexity of push operation in a stack?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> O(n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> O(log n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> O(1)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> O(n log n)
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. Which of the following is NOT a basic stack operation?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Push
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Pop
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Peek
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Swap
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. What happens when you try to pop from an empty stack?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Returns null
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Returns 0
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Causes underflow
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Returns the last pushed item
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. Which data structure is typically used to implement a stack?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Linked List
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Array
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Both A and B
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Tree
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. What is the purpose of the peek operation in a stack?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> To remove the top element
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> To view the top element without removing it
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> To swap the top two elements
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> To count the number of elements
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. Which of these applications typically uses a stack?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Function call management
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Undo operations in text editors
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Expression evaluation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. What is the time complexity of checking if a stack is empty?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> O(n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> O(1)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> O(log n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> O(n²)
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. What happens when you try to push to a full stack (array implementation)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> The item is discarded
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Causes overflow
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> The array automatically resizes
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> The oldest item is removed
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. Which of these is a valid postfix (Reverse Polish) expression?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> 2 3 + 4 *
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> + 2 3 4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> 2 + 3 * 4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> (2 + 3) * 4
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. What is the minimum number of stacks needed to implement a queue?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> 3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> 4
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. In a linked list implementation of a stack, where should new elements be added?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> At the tail
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> At the head
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> In the middle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> At a random position
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. What is the postfix equivalent of the infix expression A+B*C?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> ABC*+
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> AB+C*
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> A+BC*
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> ABC+*
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. Which algorithm uses a stack to keep track of visited nodes?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Breadth-First Search
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Depth-First Search
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Dijkstra's Algorithm
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Binary Search
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. What is the main advantage of using a linked list over an array for stack implementation?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Constant time random access
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> No size limitation (dynamic size)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Better cache performance
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Less memory usage
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. What is the purpose of a stack pointer?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> To point to the top of the stack
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> To count the number of elements
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> To traverse the stack
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> To point to the middle element
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. Which of these is NOT a valid application of stacks?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Memory management
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Backtracking algorithms
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Implementing recursion
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Sorting large datasets
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. What is the time complexity of evaluating a postfix expression with n elements?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> O(n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> O(n log n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> O(n²)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> O(1)
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. In a stack, which operation is used to check if the stack is full (array implementation)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> isFull()
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> isEmpty()
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> peek()
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> size()
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. What is the space complexity of a stack implemented with a linked list?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> O(1)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> O(n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> O(log n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> O(n²)
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/watch?v=KInG04mAjO0" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Stacks Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('dsCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('dsCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'c', q3: 'd', q4: 'c', q5: 'c',
+                q6: 'b', q7: 'd', q8: 'b', q9: 'b', q10: 'a',
+                q11: 'b', q12: 'b', q13: 'a', q14: 'b', q15: 'b',
+                q16: 'a', q17: 'd', q18: 'a', q19: 'a', q20: 'b'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Stacks follow Last In First Out (LIFO) principle - the last element added is the first one to be removed.",
+                q2: "Push operation in a stack is O(1) as it only involves adding an element to the top.",
+                q3: "Basic stack operations are push, pop, and peek. Swap is not a standard stack operation.",
+                q4: "Popping from an empty stack causes underflow, which is typically handled by throwing an exception or returning an error.",
+                q5: "Stacks can be implemented using either arrays or linked lists. Both are common implementations.",
+                q6: "Peek operation allows viewing the top element without modifying the stack.",
+                q7: "Stacks are used in function calls (call stack), undo operations (keeping history), and expression evaluation.",
+                q8: "Checking if a stack is empty is O(1) as it only requires checking the top pointer or count.",
+                q9: "Pushing to a full stack (array implementation) causes overflow, which is typically handled by throwing an exception or returning an error.",
+                q10: "2 3 + 4 * is valid postfix notation (equivalent to (2+3)*4 in infix).",
+                q11: "A queue can be implemented using two stacks - one for enqueue and one for dequeue operations.",
+                q12: "In linked list implementation, new elements are added at the head for O(1) time complexity.",
+                q13: "A+B*C in postfix is ABC*+ (B and C multiplied first, then A added to the result).",
+                q14: "Depth-First Search (DFS) uses a stack to keep track of nodes to visit next.",
+                q15: "Linked list implementation doesn't have size limitation unlike array implementation which has fixed size.",
+                q16: "Stack pointer points to the top of the stack, indicating where the next element will be added/removed.",
+                q17: "Stacks are not typically used for sorting large datasets (though they can be used in some sorting algorithms).",
+                q18: "Postfix evaluation is O(n) as each element is processed exactly once.",
+                q19: "isFull() checks if the stack has reached its maximum capacity (array implementation).",
+                q20: "Space complexity is O(n) as it requires space proportional to the number of elements."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered stacks!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most stack concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#ebf5fb';
+                    this.style.borderColor = '#3498db';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

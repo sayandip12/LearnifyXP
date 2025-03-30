@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Awareness Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #1565c0;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #1565c0;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #e3f2fd;
+            border-color: #1565c0;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #1565c0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #0d47a1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #1976d2;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #1565c0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .term {
+            font-weight: bold;
+            color: #1565c0;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Financial Awareness Quiz</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is the full form of 'GDP' in economics?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Gross Domestic Product
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> General Domestic Product
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Government Development Plan
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Gross Development Percentage
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. Which of the following is NOT a component of India's monetary policy?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Repo Rate
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Reverse Repo Rate
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Cash Reserve Ratio
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Income Tax Rate
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. What does 'FDI' stand for in financial terms?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Foreign Direct Investment
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Financial Development Index
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Fixed Deposit Interest
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Fiscal Deficit Indicator
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. What is the current fiscal deficit target of India (as % of GDP)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> 3.5%
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> 4.5%
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> 5.9%
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> 6.4%
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. Which organization is responsible for calculating India's GDP?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Reserve Bank of India
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Ministry of Finance
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Central Statistics Office
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Securities and Exchange Board of India
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. What is the full form of 'SEBI'?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Securities and Exchange Board of India
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Stock Exchange Bureau of India
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Savings and Exchange Bank of India
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Social Equity Board of India
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. Which of the following is NOT a type of inflation?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Demand-pull inflation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Cost-push inflation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Built-in inflation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> Fiscal inflation
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. What is the current GST rate for most goods in India?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> 5%
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> 12%
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> 18%
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> 28%
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. What does 'IPO' stand for in financial markets?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> International Purchase Order
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Initial Public Offering
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Investment Portfolio Option
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Indian Public Organization
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. Which of the following is NOT a function of the Reserve Bank of India?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Issuing currency notes
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Regulating banks
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Managing foreign exchange
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> Setting income tax rates
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. What is the full form of 'NPS' in financial terms?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> National Payment System
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> New Pension Scheme
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> National Pension System
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Net Profit Share
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. What does 'KYC' stand for in banking terms?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Know Your Customer
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Keep Your Cash
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Key Yield Calculation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> Know Your Currency
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. Which of the following is NOT a type of mutual fund?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Equity funds
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Debt funds
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Hybrid funds
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Fixed funds
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. What is the full form of 'ETF' in investment terms?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Exchange Traded Fund
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Electronic Transfer Fund
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Equity Trading Fund
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Export Trade Finance
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. Which of the following is NOT a credit rating agency in India?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> CRISIL
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> ICRA
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> CARE
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> RBI
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. What does 'PPF' stand for in financial terms?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Public Provident Fund
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Private Pension Fund
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Personal Profit Fund
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Primary Portfolio Fund
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. What is the current lock-in period for ELSS mutual funds?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> 1 year
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> 2 years
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> 3 years
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> 5 years
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. Which of the following is NOT a type of tax in India?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Direct tax
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Indirect tax
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Progressive tax
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Fixed tax
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. What is the full form of 'PAN' in financial terms?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Permanent Account Number
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Personal Account Number
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Primary Account Number
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Public Account Number
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. Which of the following is NOT a function of the Securities and Exchange Board of India (SEBI)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Regulating stock exchanges
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Protecting investors' interests
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Regulating banking operations
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Promoting development of securities market
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/playlist?list=PLN7-HyA4mGr-Zf6DEbB7T1xk83NQaRfKh" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Financial Awareness Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('financeCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('financeCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'a', q2: 'd', q3: 'a', q4: 'd', q5: 'c',
+                q6: 'a', q7: 'd', q8: 'c', q9: 'b', q10: 'd',
+                q11: 'c', q12: 'a', q13: 'd', q14: 'a', q15: 'd',
+                q16: 'a', q17: 'c', q18: 'd', q19: 'a', q20: 'c'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "GDP stands for Gross Domestic Product, which measures the total value of goods and services produced in a country.",
+                q2: "Income Tax Rate is set by the government, not part of RBI's monetary policy which includes repo rate, reverse repo rate, and CRR.",
+                q3: "FDI stands for Foreign Direct Investment, which is investment made by a foreign company in another country.",
+                q4: "As of 2023, India's fiscal deficit target is 6.4% of GDP. Note: This may change annually, so update accordingly.",
+                q5: "The Central Statistics Office (CSO) under Ministry of Statistics calculates India's GDP.",
+                q6: "SEBI stands for Securities and Exchange Board of India, the regulator for securities market in India.",
+                q7: "The three main types of inflation are demand-pull, cost-push, and built-in. 'Fiscal inflation' is not a standard term.",
+                q8: "The standard GST rate for most goods is 18%, though some items have 5%, 12%, or 28% rates.",
+                q9: "IPO stands for Initial Public Offering, when a company first sells its shares to the public.",
+                q10: "Setting income tax rates is the government's function, not RBI's which handles currency, banking regulation, and forex.",
+                q11: "NPS stands for National Pension System, a government-sponsored pension scheme.",
+                q12: "KYC stands for Know Your Customer, the process banks use to verify customer identity.",
+                q13: "The main types of mutual funds are equity, debt, and hybrid. 'Fixed funds' is not a category.",
+                q14: "ETF stands for Exchange Traded Fund, a type of security that tracks an index, commodity, or basket of assets.",
+                q15: "RBI is the central bank, not a credit rating agency. CRISIL, ICRA, and CARE are rating agencies.",
+                q16: "PPF stands for Public Provident Fund, a popular long-term savings scheme in India.",
+                q17: "ELSS (Equity Linked Savings Scheme) funds have a 3-year lock-in period and offer tax benefits under Section 80C.",
+                q18: "India has direct and indirect taxes, with progressive taxation system, but no 'fixed tax' category.",
+                q19: "PAN stands for Permanent Account Number, a unique identifier for taxpayers in India.",
+                q20: "Regulating banking operations is RBI's function, not SEBI's which regulates securities markets."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered Financial Awareness!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most financial concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial for better preparation.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial to improve your financial knowledge.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#e3f2fd';
+                    this.style.borderColor = '#1565c0';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

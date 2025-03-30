@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quiz - Sequence and Series</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #ebf5fb;
+            border-color: #3498db;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #e67e22;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #d35400;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Math Quiz - Sequence and Series</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is the next term in the sequence: 2, 5, 10, 17, 26, ...?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> 33
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> 35
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> 37
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> 39
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. What is the common difference in the arithmetic sequence: 7, 11, 15, 19, ...?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> 3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> 4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> 5
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. What is the 10th term of the arithmetic sequence where the first term is 5 and the common difference is 3?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> 30
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> 32
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> 34
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> 36
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. What is the common ratio in the geometric sequence: 3, 6, 12, 24, ...?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> 1.5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> 3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> 4
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. What is the sum of the first 10 terms of the arithmetic series: 1 + 3 + 5 + 7 + ...?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> 90
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> 100
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> 110
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> 120
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. What is the sum to infinity of the geometric series: 1 + 1/2 + 1/4 + 1/8 + ...?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> 1.5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> 2.5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> 3
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. Which of these is an arithmetic sequence?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> 2, 4, 8, 16, ...
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> 1, 1, 2, 3, 5, ...
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> 5, 10, 15, 20, ...
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> 1, 4, 9, 16, ...
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. What is the general term of the sequence: 1, 4, 9, 16, 25, ...?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> aₙ = n
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> aₙ = 2n
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> aₙ = n²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> aₙ = 2ⁿ
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. What is the sum of the first n terms of an arithmetic series (Sₙ) formula?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Sₙ = a₁ + (n-1)d
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Sₙ = n/2 (2a₁ + (n-1)d)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Sₙ = a₁(1 - rⁿ)/(1 - r)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Sₙ = a₁/(1 - r)
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. What is the 7th term of the geometric sequence where a₁ = 2 and r = 3?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> 486
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> 1,458
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> 4,374
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> 13,122
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. Which of these sequences is geometric?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> 1, 3, 6, 10, 15, ...
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> 1, 4, 9, 16, 25, ...
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> 5, 10, 20, 40, 80, ...
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> 2, 3, 5, 7, 11, ...
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. What is the sum of the first 5 terms of the geometric series: 4 + 12 + 36 + ...?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> 120
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> 364
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> 484
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> 624
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. What is the harmonic mean between 2 and 8?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> 3.2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> 3.6
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> 4.0
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> 4.8
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. Which term of the arithmetic sequence 7, 10, 13, ... is 52?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> 14th
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> 15th
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> 16th
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> 17th
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. What is the sum of the infinite geometric series: 9 + 3 + 1 + 1/3 + ...?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> 12
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> 13.5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> 15
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> 18
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. What is the arithmetic mean between 12 and 20?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> 14
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> 15
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> 16
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> 18
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. Which of these is a Fibonacci sequence?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> 1, 3, 5, 7, 9, ...
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> 2, 4, 8, 16, 32, ...
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> 1, 1, 2, 3, 5, 8, ...
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> 1, 4, 9, 16, 25, ...
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. What is the sum of the first 20 natural numbers?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> 190
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> 200
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> 210
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> 220
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. What is the geometric mean between 4 and 16?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> 6
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> 8
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> 10
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> 12
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. Which of these series converges?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> 1 + 2 + 3 + 4 + ...
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> 1 + 1/2 + 1/3 + 1/4 + ...
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> 1 + 1/2 + 1/4 + 1/8 + ...
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> 1 + 3 + 5 + 7 + ...
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/watch?v=Wj2VY8J4ueg" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Sequence and Series Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('mathCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('mathCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'c', q2: 'c', q3: 'b', q4: 'b', q5: 'b',
+                q6: 'b', q7: 'c', q8: 'c', q9: 'b', q10: 'b',
+                q11: 'c', q12: 'c', q13: 'a', q14: 'c', q15: 'b',
+                q16: 'c', q17: 'c', q18: 'c', q19: 'b', q20: 'c'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "The sequence follows the pattern n²+1 (1²+1=2, 2²+1=5, etc.), so the next term is 6²+1=37.",
+                q2: "Common difference (d) = 11 - 7 = 4 (constant difference between terms).",
+                q3: "Using aₙ = a₁ + (n-1)d: a₁₀ = 5 + (10-1)×3 = 5 + 27 = 32.",
+                q4: "Common ratio (r) = 6/3 = 2 (constant ratio between terms).",
+                q5: "This is the sum of first 10 odd numbers. Sum = n² = 10² = 100.",
+                q6: "Infinite sum S = a₁/(1-r) = 1/(1-1/2) = 2.",
+                q7: "Option C has a constant difference of 5 between terms (arithmetic sequence).",
+                q8: "The sequence represents perfect squares: 1², 2², 3², etc.",
+                q9: "The correct formula for sum of arithmetic series is Sₙ = n/2 [2a₁ + (n-1)d].",
+                q10: "Using aₙ = a₁ × rⁿ⁻¹: a₇ = 2 × 3⁶ = 2 × 729 = 1,458.",
+                q11: "Option C has a constant ratio of 2 between terms (geometric sequence).",
+                q12: "Using Sₙ = a₁(1-rⁿ)/(1-r): S₅ = 4(1-3⁵)/(1-3) = 4(-242)/(-2) = 484.",
+                q13: "Harmonic mean = 2ab/(a+b) = 2×2×8/(2+8) = 32/10 = 3.2.",
+                q14: "Using aₙ = a₁ + (n-1)d: 52 = 7 + (n-1)×3 → n-1 = 15 → n = 16.",
+                q15: "Infinite sum S = a₁/(1-r) = 9/(1-1/3) = 9/(2/3) = 13.5.",
+                q16: "Arithmetic mean = (a+b)/2 = (12+20)/2 = 16.",
+                q17: "Fibonacci sequence: each term is the sum of the two preceding ones.",
+                q18: "Sum = n(n+1)/2 = 20×21/2 = 210.",
+                q19: "Geometric mean = √(ab) = √(4×16) = √64 = 8.",
+                q20: "Option C is a geometric series with r=1/2 < 1, so it converges."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered sequences and series!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#ebf5fb';
+                    this.style.borderColor = '#3498db';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Quiz - Laws of Motion</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #9b59b6;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #9b59b6;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #f5eef8;
+            border-color: #9b59b6;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #8e44ad;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f3e5f5;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #e67e22;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #d35400;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #9b59b6;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Physics Quiz - Laws of Motion</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. Who formulated the three laws of motion?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Albert Einstein
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Galileo Galilei
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Isaac Newton
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Nikola Tesla
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. Newton's first law of motion is also known as:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Law of inertia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Law of acceleration
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Law of action-reaction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Law of gravitation
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. According to Newton's second law, force equals:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Mass times velocity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Mass times acceleration
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Velocity times acceleration
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Mass times velocity squared
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. The SI unit of force is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Joule
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Watt
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Newton
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Pascal
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. Newton's third law states that for every action there is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> An equal and opposite reaction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> A greater reaction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> A reaction in the same direction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> No reaction
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. The tendency of an object to resist changes in its motion is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Acceleration
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Inertia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Momentum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Friction
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. What is the mathematical expression of Newton's second law?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> F = mv
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> F = ma
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> F = m/a
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> F = v/t
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. When a car suddenly stops, passengers tend to move forward due to:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Gravity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Inertia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Friction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Centripetal force
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. The force that opposes the relative motion between two surfaces in contact is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Tension
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Normal force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Friction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Gravity
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. The product of an object's mass and velocity is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Acceleration
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Momentum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> Inertia
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. Which of the following is an example of Newton's third law?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> A book resting on a table
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> A rocket propelling itself upward
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> A car accelerating on a highway
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> A ball rolling down a hill
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. The force exerted by a surface perpendicular to the object in contact with it is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Frictional force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Normal force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Tension force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> Gravitational force
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. When a net force acts on an object, the object will:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Remain at rest
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Move with constant velocity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Accelerate
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Decelerate
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. The force required to keep an object moving in a circular path is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Centripetal force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Centrifugal force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Gravitational force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Frictional force
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. The apparent outward force experienced in circular motion is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Centripetal force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Centrifugal force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Normal force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Tension force
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. The maximum velocity an object reaches when falling through a fluid is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Escape velocity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Terminal velocity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Orbital velocity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Critical velocity
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. The force that keeps planets in orbit around the sun is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Electromagnetic force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Gravitational force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Nuclear force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Frictional force
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. The force exerted by a stretched or compressed spring is described by:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Newton's law of gravitation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Hooke's law
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Bernoulli's principle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Archimedes' principle
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. The acceleration due to gravity on Earth is approximately:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> 1.6 m/s²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> 4.9 m/s²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> 9.8 m/s²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> 19.6 m/s²
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. The property that determines an object's resistance to angular acceleration is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Mass
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Inertia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Moment of inertia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Torque
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/watch?v=example" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Laws of Motion Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('physicsCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('physicsCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'c', q2: 'a', q3: 'b', q4: 'c', q5: 'a',
+                q6: 'b', q7: 'b', q8: 'b', q9: 'c', q10: 'c',
+                q11: 'b', q12: 'b', q13: 'c', q14: 'a', q15: 'b',
+                q16: 'b', q17: 'b', q18: 'b', q19: 'c', q20: 'c'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Sir Isaac Newton formulated the three laws of motion in his work 'Philosophiæ Naturalis Principia Mathematica' (1687).",
+                q2: "Newton's first law states that an object will remain at rest or in uniform motion unless acted upon by an external force. This property is called inertia.",
+                q3: "Newton's second law: F = ma (Force equals mass times acceleration).",
+                q4: "The newton (N) is the SI unit of force. 1 N = 1 kg·m/s².",
+                q5: "Newton's third law: When one body exerts a force on another, the second body exerts an equal and opposite force on the first.",
+                q6: "Inertia is the resistance of any physical object to any change in its velocity.",
+                q7: "F = ma is the mathematical expression of Newton's second law of motion.",
+                q8: "This is an example of inertia - the passengers' bodies tend to continue moving forward when the car stops.",
+                q9: "Friction is the force resisting the relative motion of solid surfaces, fluid layers, and material elements sliding against each other.",
+                q10: "Momentum (p) is the product of an object's mass (m) and its velocity (v): p = mv.",
+                q11: "A rocket works by expelling gas downward (action), which creates an upward force on the rocket (reaction).",
+                q12: "The normal force is the component of contact force perpendicular to the surface.",
+                q13: "According to Newton's second law, a net force causes an object to accelerate (F = ma).",
+                q14: "Centripetal force is the inward force required to keep an object moving in a circular path.",
+                q15: "Centrifugal force is the apparent outward force experienced in a rotating reference frame (not a real force in inertial frames).",
+                q16: "Terminal velocity is reached when the force of gravity is balanced by the drag force and buoyancy.",
+                q17: "Gravitational force is responsible for keeping planets in orbit around the sun.",
+                q18: "Hooke's law states that the force exerted by a spring is proportional to its displacement: F = -kx.",
+                q19: "The standard acceleration due to gravity on Earth's surface is 9.80665 m/s² (often rounded to 9.8 m/s²).",
+                q20: "Moment of inertia is a measure of an object's resistance to changes in its rotational motion."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered the laws of motion!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most concepts of motion.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#f5eef8';
+                    this.style.borderColor = '#9b59b6';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

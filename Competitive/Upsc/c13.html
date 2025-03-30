@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethics, Integrity & Aptitude Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #8e44ad;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #8e44ad;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #f5eef8;
+            border-color: #8e44ad;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #8e44ad;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #7d3c98;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .quote {
+            font-style: italic;
+            color: #555;
+            border-left: 3px solid #8e44ad;
+            padding-left: 15px;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Ethics, Integrity & Aptitude Quiz</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. Which of these best defines 'integrity' in public service?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Following orders without question
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Consistency between one's values and actions
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Achieving targets by any means necessary
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Maintaining good relations with colleagues
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. The 'Nolan Principles' of public life were established in which country?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> United States
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> India
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> United Kingdom
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Canada
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. Which of these is NOT one of the seven principles of public life according to the Nolan Committee?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Selflessness
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Integrity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Popularity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Accountability
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. Emotional intelligence is crucial in public service because it helps in:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Manipulating others effectively
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Understanding and managing one's own and others' emotions
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Hiding personal biases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Getting promotions faster
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. A public servant discovers his relative is benefiting from a policy he implemented. What should he do?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Ignore it since the policy is for public good
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Declare the conflict of interest and recuse himself
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Modify the policy to exclude his relative
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Continue implementing the policy secretly
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. The concept of 'Whistleblowing' refers to:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Reporting wrongdoing in an organization
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Creating disturbance at workplace
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Sharing confidential information with media
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Complaining about personal grievances
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. Which of these is an example of 'value conflict' in public service?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Choosing between family time and work deadline
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Deciding between environmental protection and economic growth
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Selecting between two qualified candidates for promotion
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> Choosing between two equally good policy options
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. The 'Right to Information Act' in India primarily promotes which ethical principle?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Transparency
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Loyalty
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Obedience
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Discipline
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. Which philosopher is most associated with the concept of the 'Categorical Imperative' in ethics?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> John Stuart Mill
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Immanuel Kant
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Aristotle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Jeremy Bentham
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. The 'Veil of Ignorance' concept in ethics was proposed by:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> John Rawls
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Thomas Hobbes
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Jean-Jacques Rousseau
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> Friedrich Nietzsche
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. Which of these is NOT a component of emotional intelligence?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Self-awareness
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Social skills
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Manipulation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Empathy
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. The 'Four Pillars of Medical Ethics' include all EXCEPT:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Autonomy
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Beneficence
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Non-maleficence
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> Popularity
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. The 'Tragedy of Commons' illustrates the conflict between:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Individual and collective interests
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Rich and poor
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Urban and rural populations
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Government and private sector
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. Which of these is an example of 'moral courage' in public service?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Following orders without question
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Standing up against corruption despite risks
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Maintaining neutrality in all situations
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Avoiding controversial decisions
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. The 'Prevention of Corruption Act' in India was amended in 2018 to:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Make bribe-giving a specific offense
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Reduce penalties for first-time offenders
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Exclude corporate bribery
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Decriminalize minor corruption
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. The concept of 'Dharma' in Indian philosophy is closest to:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Religious rituals
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Ethical duty and righteousness
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Political power
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Economic prosperity
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. Which of these is NOT a characteristic of good governance?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Participation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Transparency
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Nepotism
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Accountability
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. The 'Citizen's Charter' initiative aims to:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Increase government secrecy
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Improve public service delivery
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Reduce citizen participation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Limit access to information
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. The 'Kautilya's Arthashastra' emphasizes the importance of:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Ethical governance
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Military conquest
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Religious dominance
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Economic isolation
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. The 'Utilitarian' approach to ethics focuses on:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Maximizing happiness for the greatest number
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Following divine commandments
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Maintaining personal virtues
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Obeying authority figures
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/playlist?list=PL_jVXFdrvYdDKotaPiwLJ0TbxVwTv-a33" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Ethics, Integrity & Aptitude Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('ethicsCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('ethicsCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'c', q3: 'c', q4: 'b', q5: 'b',
+                q6: 'a', q7: 'b', q8: 'a', q9: 'b', q10: 'a',
+                q11: 'c', q12: 'd', q13: 'a', q14: 'b', q15: 'a',
+                q16: 'b', q17: 'c', q18: 'b', q19: 'a', q20: 'a'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Integrity means alignment between values and actions, especially important in public service where decisions affect many people.",
+                q2: "The Nolan Principles (1995) established standards for British public life, but are widely referenced globally.",
+                q3: "The seven principles are: Selflessness, Integrity, Objectivity, Accountability, Openness, Honesty, and Leadership.",
+                q4: "Emotional intelligence helps public servants manage stress, resolve conflicts, and make balanced decisions.",
+                q5: "Declaring conflict of interest maintains transparency and public trust in decision-making processes.",
+                q6: "Whistleblowing is protected in many countries as it helps expose corruption and malpractice.",
+                q7: "Value conflicts require balancing competing ethical principles, like development vs conservation.",
+                q8: "RTI Act (2005) empowers citizens to access government information, promoting transparency.",
+                q9: "Kant's Categorical Imperative suggests acting only according to maxims that could become universal laws.",
+                q10: "Rawls' Veil of Ignorance suggests designing systems without knowing one's future position in them.",
+                q11: "Manipulation contradicts emotional intelligence which emphasizes authentic relationships.",
+                q12: "The four pillars are: Autonomy, Beneficence, Non-maleficence, and Justice.",
+                q13: "The Tragedy of Commons shows how individual rational actions can collectively deplete shared resources.",
+                q14: "Moral courage involves standing for principles despite personal risks or opposition.",
+                q15: "The 2018 amendment made bribe-giving punishable (Section 8) and introduced corporate liability.",
+                q16: "Dharma encompasses moral order, righteous duty, and cosmic law in Indian traditions.",
+                q17: "Nepotism (favoritism to relatives) contradicts merit-based good governance principles.",
+                q18: "Citizen's Charter improves service quality by setting standards and accountability mechanisms.",
+                q19: "Though pragmatic, Arthashastra emphasizes ethical conduct in governance and administration.",
+                q20: "Utilitarianism (Bentham/Mill) evaluates actions based on consequences and overall welfare."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered Ethics, Integrity & Aptitude!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most ethical concepts in governance.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial for better clarity.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial playlist to improve your knowledge.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#f5eef8';
+                    this.style.borderColor = '#8e44ad';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

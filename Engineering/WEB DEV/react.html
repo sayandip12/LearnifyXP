@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReactJS Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #61dafb;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #61dafb;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #e6f7ff;
+            border-color: #61dafb;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #61dafb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #21a1f1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #61dafb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #21a1f1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .code {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #e67e22;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>ReactJS Quiz</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is ReactJS primarily used for?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Database management
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Building user interfaces
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Server-side scripting
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Mobile app development (without additional frameworks)
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. Which company developed React?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Google
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Microsoft
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Facebook
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Amazon
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. What is JSX in React?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> A JavaScript testing framework
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> A syntax extension for JavaScript that allows HTML-like code
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> A state management library
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> A build tool for React applications
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. What is the correct way to create a functional component in React?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> <span class="code">class MyComponent extends React.Component</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> <span class="code">function MyComponent() { return ... }</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> <span class="code">const MyComponent = () => { return ... }</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Both B and C
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. What is the purpose of state in React?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> To store static data that never changes
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> To store data that can change over time and trigger UI updates
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> To communicate between sibling components
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> To handle routing in the application
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. How do you update state in a functional component?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> <span class="code">this.setState()</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> <span class="code">setState()</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Using the state update function from <span class="code">useState</span> hook
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Directly modifying the state variable
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. What is the virtual DOM in React?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> A faster version of the real DOM
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> A lightweight copy of the real DOM that React uses for performance optimization
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> A database that stores component states
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> A browser API for manipulating the DOM
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. What is the correct syntax to render a component inside another component?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> <span class="code">{ChildComponent}</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> <span class="code">&lt;ChildComponent /&gt;</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> <span class="code">render(ChildComponent)</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> <span class="code">ChildComponent.render()</span>
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. What are React hooks?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Special functions that let you "hook into" React state and lifecycle features from functional components
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Tools for debugging React applications
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Components that connect to external APIs
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> A way to style React components
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. Which hook replaces componentDidMount in functional components?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> <span class="code">useEffect</span> with an empty dependency array
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> <span class="code">useState</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> <span class="code">useMemo</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> <span class="code">useCallback</span>
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. What is the purpose of keys in React lists?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> To provide style information to list items
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> To help React identify which items have changed, are added, or are removed
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> To make list items clickable
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> To automatically sort the list items
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. What is prop drilling in React?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> The process of passing props from a parent component to a deeply nested child component through multiple layers
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> A technique for validating props
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> A way to automatically pass all props to child components
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> A method for optimizing prop updates
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. What is the Context API used for in React?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> To share data that can be considered "global" without prop drilling
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> To handle routing in the application
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> To manage form state
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> To create animation effects
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. Which method is used to handle events in React?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Using HTML event attributes like onclick
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Using camelCase event handlers like onClick
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Using jQuery event handlers
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Using special React event components
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. What is the purpose of React.Fragment?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> To group multiple elements without adding extra nodes to the DOM
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> To create reusable component templates
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> To improve performance of lists
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> To handle errors in components
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. What is the difference between controlled and uncontrolled components?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Controlled components manage their own state, while uncontrolled components are managed by React
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Controlled components are managed by React, while uncontrolled components manage their own state
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Controlled components are class components, uncontrolled are functional
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> There is no difference
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. What is the purpose of the dependency array in useEffect?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> To specify which state variables should trigger the effect when they change
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> To list all the external libraries the component uses
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> To optimize performance by memoizing values
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> To declare prop types
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. What is the purpose of useMemo?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> To memoize expensive calculations so they only recompute when dependencies change
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> To manage component state
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> To handle side effects
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> To create memo components
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. What is the correct way to pass a function as a prop?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> <span class="code">&lt;ChildComponent handleClick={this.handleClick()}&gt;</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> <span class="code">&lt;ChildComponent handleClick={this.handleClick}&gt;</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> <span class="code">&lt;ChildComponent handleClick={handleClick}&gt;</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Both B and C
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. What does React.StrictMode do?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> It highlights potential problems in the application during development
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> It makes the application run faster
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> It enforces TypeScript type checking
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> It prevents components from rendering twice
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/watch?v=w7ejDZ8SWv8" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch ReactJS Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('reactCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('reactCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'c', q3: 'b', q4: 'd', q5: 'b',
+                q6: 'c', q7: 'b', q8: 'b', q9: 'a', q10: 'a',
+                q11: 'b', q12: 'a', q13: 'a', q14: 'b', q15: 'a',
+                q16: 'b', q17: 'a', q18: 'a', q19: 'd', q20: 'a'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "React is a JavaScript library for building user interfaces, particularly single-page applications.",
+                q2: "React was developed by Facebook and is now maintained by Facebook and a community of developers.",
+                q3: "JSX is a syntax extension that allows you to write HTML-like code in your JavaScript.",
+                q4: "Both function declarations and arrow functions are valid ways to create functional components in React.",
+                q5: "State is used to store data that can change over time and trigger UI updates when it changes.",
+                q6: "In functional components, you use the state update function returned by the useState hook.",
+                q7: "The virtual DOM is a lightweight copy of the real DOM that React uses to optimize updates.",
+                q8: "Components are rendered using JSX syntax with angle brackets like HTML tags.",
+                q9: "Hooks allow functional components to use state and other React features that were previously only available in class components.",
+                q10: "useEffect with an empty dependency array runs once after the initial render, similar to componentDidMount.",
+                q11: "Keys help React identify which items have changed, are added, or are removed, improving performance.",
+                q12: "Prop drilling refers to passing props through multiple layers of components to reach a deeply nested child.",
+                q13: "Context provides a way to share values between components without explicitly passing props through every level.",
+                q14: "React uses camelCase event names rather than the lowercase names used in HTML.",
+                q15: "Fragments let you group multiple children without adding extra nodes to the DOM.",
+                q16: "Controlled components are managed by React state, while uncontrolled components manage their own state internally.",
+                q17: "The dependency array specifies which values the effect depends on for re-running.",
+                q18: "useMemo optimizes performance by memoizing expensive calculations.",
+                q19: "You should pass the function reference, not the function call (which would pass the return value).",
+                q20: "StrictMode helps identify potential problems during development by running extra checks."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered ReactJS fundamentals!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most React concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial to improve.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial and try again.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#e6f7ff';
+                    this.style.borderColor = '#61dafb';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

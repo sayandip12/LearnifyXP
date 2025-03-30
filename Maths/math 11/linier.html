@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematics Quiz - Linear Inequalities</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #27ae60;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #27ae60;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #e8f8f0;
+            border-color: #27ae60;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #e67e22;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #d35400;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .inequality {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Mathematics Quiz - Linear Inequalities</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. Which symbol represents "greater than or equal to"?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> >
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> ≥
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> ≤
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> ≠
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. What is the solution to the inequality <span class="inequality">3x - 5 < 10</span>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> x < 5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> x > 5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> x < 15
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> x > -5
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. When multiplying both sides of an inequality by a negative number, what must you do?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Keep the inequality sign the same
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Reverse the inequality sign
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Change the inequality to an equation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Square both sides
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. Which number line represents <span class="inequality">x ≥ -2</span>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> A line with open circle at -2, shaded to the left
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> A line with closed circle at -2, shaded to the right
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> A line with open circle at -2, shaded to the right
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> A line with closed circle at -2, shaded to the left
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. What is the solution to <span class="inequality">-2x + 7 ≤ 15</span>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> x ≥ -4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> x ≤ -4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> x ≥ 4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> x ≤ 4
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. Which represents all real numbers between -3 and 5, including -3 but not 5?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> -3 < x ≤ 5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> -3 ≤ x < 5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> -3 ≤ x ≤ 5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> -3 < x < 5
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. Solve the compound inequality: <span class="inequality">-4 ≤ 2x + 6 < 10</span></h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> -5 ≤ x < 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> -5 < x ≤ 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> 1 ≤ x < 8
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> -10 ≤ x < 4
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. Which of these is NOT a solution to <span class="inequality">x + 5 > 7</span>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> 3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> 2.1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> 10
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. What is the solution to <span class="inequality">|2x - 3| ≤ 5</span>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> -1 ≤ x ≤ 4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> x ≤ -1 or x ≥ 4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> -4 ≤ x ≤ 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> x ≤ -4 or x ≥ 1
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. Which inequality represents "x is at least 5 units from 3"?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> |x - 3| ≤ 5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> |x - 3| < 5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> |x - 3| ≥ 5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> |x - 3| > 5
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. Solve the system: <span class="inequality">2x + y > 4</span> and <span class="inequality">x - y ≤ 1</span></h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> All points above both boundary lines
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> All points below both boundary lines
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> The overlapping region of both inequalities
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Only the point where the two lines intersect
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. Which inequality describes all numbers whose distance from 0 is more than 7?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> |x| < 7
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> |x| ≤ 7
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> |x| > 7
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> |x| ≥ 7
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. What is the solution to <span class="inequality">(x - 2)(x + 3) > 0</span>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> x < -3 or x > 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> -3 < x < 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> x < -2 or x > 3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> -2 < x < 3
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. Which inequality has no real solution?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> |x + 5| > -2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> |x - 3| < -1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> x² + 4 > 0
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> 3x - 7 < 2x + 5
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. Solve: <span class="inequality">(x - 1)/(x + 2) ≤ 0</span></h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> x ≤ -2 or x ≥ 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> -2 < x ≤ 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> x ≤ 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> x ≥ -2
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. Which inequality represents the shaded region where y is greater than 2x - 1?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> y > 2x - 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> y < 2x - 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> y ≥ 2x - 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> y ≤ 2x - 1
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. What is the solution to <span class="inequality">x² - 5x + 6 > 0</span>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> 2 < x < 3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> x < 2 or x > 3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> x < -3 or x > -2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> All real numbers
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. Which inequality is equivalent to <span class="inequality">-3 < 2x + 1 ≤ 5</span>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> -2 < x ≤ 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> -4 < 2x ≤ 4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> -1 < x ≤ 3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> -2 ≤ x < 2
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. Solve: <span class="inequality">|3x + 2| > 7</span></h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> x < -3 or x > 5/3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> -3 < x < 5/3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> x > -3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> x < 5/3
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. Which inequality has the solution shown on this number line: (←o——→) with open circle at -1, shaded to the right?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> x > -1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> x < -1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> x ≥ -1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> x ≤ -1
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/watch?v=WYCHOLt2w7w" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Linear Inequalities Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('mathCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('mathCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'a', q3: 'b', q4: 'b', q5: 'a',
+                q6: 'b', q7: 'a', q8: 'c', q9: 'a', q10: 'c',
+                q11: 'c', q12: 'c', q13: 'a', q14: 'b', q15: 'b',
+                q16: 'a', q17: 'b', q18: 'a', q19: 'a', q20: 'a'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "The symbol ≥ means 'greater than or equal to'.",
+                q2: "Solving step-by-step: 3x - 5 < 10 → 3x < 15 → x < 5.",
+                q3: "When multiplying/dividing by negative numbers, you must reverse the inequality sign.",
+                q4: "≥ uses a closed circle, and 'greater than' shades to the right.",
+                q5: "-2x + 7 ≤ 15 → -2x ≤ 8 → x ≥ -4 (remember to reverse the sign when dividing by -2).",
+                q6: "≤ means including the endpoint, < means not including it.",
+                q7: "Solve each part separately: -4 ≤ 2x + 6 → -10 ≤ 2x → -5 ≤ x; and 2x + 6 < 10 → 2x < 4 → x < 2.",
+                q8: "x + 5 > 7 → x > 2, so 2 is not a solution (it must be greater than 2).",
+                q9: "|2x - 3| ≤ 5 → -5 ≤ 2x - 3 ≤ 5 → -2 ≤ 2x ≤ 8 → -1 ≤ x ≤ 4.",
+                q10: "'At least 5 units from 3' translates to |x - 3| ≥ 5.",
+                q11: "The solution to a system of inequalities is the overlapping region that satisfies both conditions.",
+                q12: "Distance from 0 is |x|, and 'more than 7' is |x| > 7.",
+                q13: "The critical points are x = -3 and x = 2. Test intervals to find where the product is positive.",
+                q14: "Absolute value is always non-negative, so |x - 3| < -1 has no solution.",
+                q15: "Critical points at x = -2 and x = 1. Test intervals to find where the fraction is ≤ 0.",
+                q16: "y > mx + b represents the region above the line y = mx + b.",
+                q17: "x² - 5x + 6 = (x-2)(x-3) > 0 when x < 2 or x > 3.",
+                q18: "-3 < 2x + 1 ≤ 5 → -4 < 2x ≤ 4 → -2 < x ≤ 2.",
+                q19: "|3x + 2| > 7 → 3x + 2 < -7 or 3x + 2 > 7 → x < -3 or x > 5/3.",
+                q20: "Open circle at -1 means not including -1, shaded right means greater than -1."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered linear inequalities!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#e8f8f0';
+                    this.style.borderColor = '#27ae60';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

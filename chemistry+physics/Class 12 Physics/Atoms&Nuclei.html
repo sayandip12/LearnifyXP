@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Quiz - Atoms and Nuclei</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #673ab7;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #673ab7;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #ede7f6;
+            border-color: #673ab7;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #673ab7;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #5e35b1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #ede7f6;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #5e35b1;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #512da8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #673ab7;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Physics Quiz - Atoms and Nuclei</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. Which experiment led to the discovery of the atomic nucleus?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Thomson's cathode ray experiment
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Rutherford's alpha scattering experiment
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Millikan's oil drop experiment
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Davisson-Germer experiment
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. What is the approximate size of an atom compared to its nucleus?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> 10 times larger
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> 100 times larger
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> 10,000 times larger
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> 100,000 times larger
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. Which atomic model introduced the concept of quantized electron orbits?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Dalton's model
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Thomson's model
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Rutherford's model
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Bohr's model
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. What does the mass number (A) of a nucleus represent?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Number of protons only
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Number of neutrons only
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Sum of protons and neutrons
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Number of electrons
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. What is the relationship between the radius (R) of a nucleus and its mass number (A)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> R ∝ A
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> R ∝ A<sup>1/2</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> R ∝ A<sup>1/3</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> R ∝ A<sup>2</sup>
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. Which of the following is NOT a type of radioactive decay?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Alpha decay
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Beta decay
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Gamma decay
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Delta decay
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. What particle is emitted in beta-minus (β⁻) decay?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Proton
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Neutron
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Electron
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> Helium nucleus
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. What is the half-life of a radioactive substance?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Time for all atoms to decay
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Time for half the atoms to decay
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Time for activity to reduce by 1/e
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Average life of radioactive atoms
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. What is the binding energy of a nucleus?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Energy needed to remove a proton
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Energy needed to remove a neutron
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Energy equivalent of mass defect
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Energy released in radioactive decay
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. Which conservation law explains why neutrinos are emitted in beta decay?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Energy conservation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Lepton number conservation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Both a and b
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> Charge conservation only
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. What is the SI unit of activity of a radioactive substance?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Curie
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Rutherford
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Becquerel
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Roentgen
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. What is the process by which two light nuclei combine to form a heavier nucleus?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Fission
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Fusion
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Alpha decay
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> Transmutation
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. Which series of hydrogen spectral lines falls in the visible region?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Lyman series
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Balmer series
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Paschen series
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Brackett series
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. What is the ratio of nuclear densities of two nuclei with mass numbers A₁ and A₂?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> A₁/A₂
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> A₂/A₁
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> 1:1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> (A₁/A₂)<sup>3</sup>
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. What is the energy equivalent of 1 atomic mass unit (u)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> 1.492 × 10<sup>-10</sup> J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> 931.5 MeV
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Both a and b
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> 1.602 × 10<sup>-19</sup> J
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. Which of these particles has the highest ionizing power?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Alpha particle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Beta particle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Gamma ray
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Neutron
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. What is the process where a heavy nucleus splits into smaller nuclei?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Fusion
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Fission
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Alpha decay
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Beta decay
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. What is the value of Rydberg constant for hydrogen?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> 1.097 × 10<sup>7</sup> m<sup>-1</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> 6.626 × 10<sup>-34</sup> Js
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> 9.109 × 10<sup>-31</sup> kg
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> 1.602 × 10<sup>-19</sup> C
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. Which of these is NOT a fundamental force acting in the nucleus?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Gravitational force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Electromagnetic force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Strong nuclear force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Weak nuclear force
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. What is the ratio of nuclear radii of <sup>238</sup>U and <sup>197</sup>Au?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> 238:197
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> (238/197)<sup>1/3</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> (197/238)<sup>1/3</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> 197:238
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/live/s-u1YoZNFTw?si=s2FOHspNv_9x6TYG" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Atoms and Nuclei Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('physicsCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('physicsCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'd', q3: 'd', q4: 'c', q5: 'c',
+                q6: 'd', q7: 'c', q8: 'b', q9: 'c', q10: 'c',
+                q11: 'c', q12: 'b', q13: 'b', q14: 'c', q15: 'c',
+                q16: 'a', q17: 'b', q18: 'a', q19: 'a', q20: 'b'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Rutherford's gold foil experiment (1909) revealed the nucleus through alpha particle scattering.",
+                q2: "Atomic radius (~10⁻¹⁰m) is about 10⁵ times nuclear radius (~10⁻¹⁵m).",
+                q3: "Bohr's model (1913) introduced quantized electron orbits with angular momentum = nħ.",
+                q4: "Mass number A = Z (protons) + N (neutrons). Atomic number Z = proton count.",
+                q5: "Nuclear radius R = R₀A¹ᐟ³, where R₀ ≈ 1.2 fm (femtometers). Volume ∝ A.",
+                q6: "Delta decay doesn't exist. Main types are α, β, γ decay and spontaneous fission.",
+                q7: "β⁻ decay emits an electron (and antineutrino) when neutron → proton + e⁻ + ν̄.",
+                q8: "Half-life (t₁ᐟ₂) is when N = N₀/2. Mean life τ = t₁ᐟ₂/ln2 ≈ 1.44t₁ᐟ₂.",
+                q9: "Binding energy = Δmc², where Δm is mass defect (difference between nuclear mass and sum of nucleon masses).",
+                q10: "Neutrinos conserve both energy (spectrum would otherwise be continuous) and lepton number.",
+                q11: "Becquerel (Bq) = 1 decay/s. Curie (Ci) = 3.7×10¹⁰ Bq is older unit.",
+                q12: "Fusion powers stars (e.g., 4¹H → ⁴He + 2e⁺ + 2ν + energy in Sun).",
+                q13: "Balmer series (n=2) has visible lines (Hα=656nm red, Hβ=486nm blue, etc.).",
+                q14: "Nuclear density is nearly constant (~2.3×10¹⁷ kg/m³) for all nuclei.",
+                q15: "1 u = 1.66×10⁻²⁷ kg ≈ 931.5 MeV/c² (mass-energy equivalence E=mc²).",
+                q16: "Alpha particles (He nuclei) have +2 charge and large mass → strong ionization.",
+                q17: "Fission (e.g., ²³⁵U + n → fragments + neutrons + ~200MeV) is used in nuclear reactors.",
+                q18: "Rydberg constant R<sub>H</sub> = 1.097×10⁷ m⁻¹ appears in 1/λ = R(1/n₁² - 1/n₂²).",
+                q19: "Gravity is negligible in nuclei. Strong force binds nucleons, EM acts between protons, weak mediates β decay.",
+                q20: "R ∝ A¹ᐟ³ ⇒ R<sub>U</sub>/R<sub>Au</sub> = (238/197)¹ᐟ³ ≈ 1.06 (only ~6% larger despite more nucleons)."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered atomic and nuclear physics!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most atomic/nuclear concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#ede7f6';
+                    this.style.borderColor = '#673ab7';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

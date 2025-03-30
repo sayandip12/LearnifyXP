@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Quiz - Solid State</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #ebf5fb;
+            border-color: #3498db;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Chemistry Quiz - Solid State</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. Which of the following is NOT a type of crystalline solid?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Ionic solid
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Molecular solid
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Amorphous solid
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Metallic solid
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. What is the coordination number in a simple cubic unit cell?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> 4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> 6
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> 8
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> 12
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. In a face-centered cubic (FCC) structure, how many atoms are present per unit cell?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> 4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> 6
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. Which of the following crystals exhibits Frenkel defect?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> NaCl
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> KCl
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> AgBr
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> CsCl
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. What is the packing efficiency in a body-centered cubic (BCC) structure?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> 52%
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> 68%
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> 74%
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> 82%
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. Which of the following is an example of a covalent crystal?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Diamond
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Sodium chloride
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Copper
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Ice
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. In a hexagonal close-packed (HCP) structure, what is the coordination number?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> 6
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> 8
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> 12
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> 4
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. What type of semiconductor is formed when silicon is doped with arsenic?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> p-type
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> n-type
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Intrinsic
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> None of these
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. Which of the following statements about amorphous solids is true?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> They have sharp melting points
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> They are anisotropic
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> They have long-range order
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> They are isotropic
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. What is the relation between edge length (a) and radius (r) in a face-centered cubic unit cell?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> a = 2r
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> a = 4r/√3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> a = 4r/√2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> a = r√2
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. Which defect in crystals leads to an increase in density?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Schottky defect
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Frenkel defect
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Interstitial defect
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Metal excess defect
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. What is the number of octahedral voids per atom in a crystal lattice?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> 3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> 4
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. Which of the following is an example of a ferromagnetic material?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Fe
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> CrO<sub>2</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Ni
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> All of these
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. In a body-centered cubic unit cell, what fraction of the volume is occupied by atoms?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> 0.52
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> 0.68
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> 0.74
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> 0.82
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. What type of point defect is shown by AgCl when doped with CdCl<sub>2</sub>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Schottky defect
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Frenkel defect
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Metal excess defect
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Metal deficiency defect
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. Which of the following statements about unit cells is correct?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> The unit cell is the smallest repeating unit in the crystal lattice
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> There are only three types of unit cells
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> The unit cell dimensions are called unit vectors
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> All unit cells are cubic
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. What is the coordination number of atoms in a hexagonal close packing (HCP) structure?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> 6
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> 8
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> 12
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> 4
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. Which of the following is NOT a characteristic of ionic crystals?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> High melting points
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Brittle nature
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Good electrical conductivity in solid state
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Solubility in polar solvents
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. What is the packing efficiency in a simple cubic unit cell?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> 52%
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> 68%
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> 74%
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> 82%
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. Which of the following is an example of a molecular solid?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Diamond
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Sodium chloride
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Ice
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Copper
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/live/r3w9iwWRThM?si=0lhLEDjuxuclz0bU" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Solid State Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('chemistryCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('chemistryCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'c', q2: 'b', q3: 'c', q4: 'c', q5: 'b',
+                q6: 'a', q7: 'c', q8: 'b', q9: 'd', q10: 'c',
+                q11: 'c', q12: 'a', q13: 'd', q14: 'b', q15: 'd',
+                q16: 'a', q17: 'c', q18: 'c', q19: 'a', q20: 'c'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Amorphous solids (like glass) lack long-range order and are not crystalline. The other options are types of crystalline solids.",
+                q2: "In a simple cubic unit cell, each atom is in contact with 6 neighboring atoms (4 in the same plane, 1 above, and 1 below).",
+                q3: "FCC has 8 corner atoms (1/8 each) and 6 face-centered atoms (1/2 each): (8×1/8) + (6×1/2) = 1 + 3 = 4 atoms per unit cell.",
+                q4: "AgBr shows Frenkel defect where Ag⁺ ions move to interstitial sites due to small size difference between Ag⁺ and Br⁻ ions.",
+                q5: "BCC packing efficiency is 68%. It's calculated as (volume occupied by atoms)/(total volume of unit cell) × 100.",
+                q6: "Diamond is a covalent crystal where each carbon atom is covalently bonded to four others in a tetrahedral arrangement.",
+                q7: "Both FCC and HCP structures have coordination number 12, representing the maximum possible packing efficiency (74%).",
+                q8: "Doping Si (group 14) with As (group 15) creates n-type semiconductor with extra electrons as charge carriers.",
+                q9: "Amorphous solids are isotropic (properties same in all directions) because they lack long-range order.",
+                q10: "In FCC, face diagonal = 4r = a√2 ⇒ a = 4r/√2. This relates edge length (a) to atomic radius (r).",
+                q11: "Interstitial defect occurs when extra atoms occupy interstitial sites, increasing the density of the crystal.",
+                q12: "There is one octahedral void per atom in a crystal lattice. The number of tetrahedral voids is double this.",
+                q13: "Fe, Co, Ni and some compounds like CrO₂ are ferromagnetic (strongly attracted to magnetic fields).",
+                q14: "BCC packing efficiency is 68%. The calculation involves the relation between atomic radius and unit cell edge length.",
+                q15: "Doping AgCl (Ag⁺Cl⁻) with CdCl₂ introduces Cd²⁺ which creates cation vacancies (metal deficiency defect).",
+                q16: "The unit cell is indeed the smallest repeating unit that shows the full symmetry of the crystal structure.",
+                q17: "HCP and FCC both have coordination number 12, representing the most efficient packing of spheres (74%).",
+                q18: "Ionic crystals conduct electricity only in molten state or solution, not in solid state due to fixed ion positions.",
+                q19: "Simple cubic has the lowest packing efficiency (52%) among the three main cubic structures (SC, BCC, FCC).",
+                q20: "Ice (H₂O) is a molecular solid where molecules are held together by hydrogen bonds (intermolecular forces)."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered Solid State concepts!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most solid state concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#ebf5fb';
+                    this.style.borderColor = '#3498db';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantitative Aptitude Quiz - Number System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #ebf5fb;
+            border-color: #3498db;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #e67e22;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+            margin: 0 10px 10px 0;
+        }
+        
+        .video-link:hover {
+            background-color: #d35400;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+            
+            .video-link {
+                margin-bottom: 15px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Quantitative Aptitude Quiz - Number System</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is the smallest prime number?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> 0
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> 3
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. Which of these numbers is a perfect square?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> 1024
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> 1026
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> 1028
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> 1030
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. What is the sum of the first 100 natural numbers?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> 4950
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> 5050
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> 5150
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> 5250
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. Which of these is an irrational number?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> √9
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> √16
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> √25
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> √2
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. What is the LCM of 12 and 18?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> 6
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> 18
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> 36
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> 72
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. What is the HCF of 36 and 48?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> 6
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> 12
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> 16
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> 24
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. Which of these numbers is divisible by both 3 and 5?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> 305
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> 315
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> 325
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> 335
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. What is the unit digit of 7<sup>123</sup>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> 3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> 7
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> 9
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. What is the sum of all prime numbers between 1 and 20?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> 58
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> 77
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> 100
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> 112
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. Which of these is a composite number?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> 23
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> 29
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> 31
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> 33
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. What is the smallest number that should be added to 1056 to make it divisible by 23?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> 5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> 10
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> 15
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> 20
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. What is the binary equivalent of decimal number 13?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> 1010
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> 1011
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> 1100
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> 1101
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. What is the Roman numeral for 499?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> ID
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> CDXCIX
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> LD
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> XDIX
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. What is the sum of the digits of the largest 4-digit number?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> 35
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> 36
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> 37
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> 38
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. Which of these is not a twin prime pair?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> (3,5)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> (5,7)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> (11,13)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> (17,19)
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. What is the remainder when 7<sup>100</sup> is divided by 5?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> 0
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> 3
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. How many factors does the number 144 have?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> 12
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> 15
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> 18
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> 20
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. What is the product of the first five prime numbers?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> 210
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> 2310
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> 30030
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> 510510
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. Which of these numbers is a palindrome?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> 1234
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> 1221
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> 1231
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> 1332
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. What is the sum of all even numbers between 1 and 100?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> 2450
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> 2500
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> 2550
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> 2600
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://youtu.be/wqKpV2edSdE?si=FBu80AHPV0rIQEZZ" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Number System Tutorial
+            </a>
+            <a href="https://www.youtube.com/playlist?list=PLAr0hfIonl-GxRd26o0YHhOb6czgvNN9M" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Simplification Tutorial
+            </a>
+            <a href="https://www.youtube.com/playlist?list=PLAr0hfIonl-GxRd26o0YHhOb6czgvNN9M" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Percentage Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('aptitudeCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('aptitudeCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'c', q2: 'a', q3: 'b', q4: 'd', q5: 'c',
+                q6: 'b', q7: 'b', q8: 'd', q9: 'b', q10: 'd',
+                q11: 'b', q12: 'd', q13: 'b', q14: 'b', q15: 'a',
+                q16: 'b', q17: 'b', q18: 'b', q19: 'b', q20: 'c'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "2 is the smallest and only even prime number.",
+                q2: "1024 is a perfect square (32 × 32).",
+                q3: "Sum = n(n+1)/2 = 100×101/2 = 5050.",
+                q4: "√2 cannot be expressed as a fraction and has non-terminating decimal expansion.",
+                q5: "LCM of 12 (2²×3) and 18 (2×3²) is 2²×3² = 36.",
+                q6: "HCF of 36 (2²×3²) and 48 (2⁴×3) is 2²×3 = 12.",
+                q7: "315 is divisible by both 3 (sum of digits 9) and 5 (ends with 5).",
+                q8: "7's unit digit cycles every 4 powers: 7,9,3,1. 123 mod 4 = 3 → cycle's 3rd position is 3.",
+                q9: "Primes between 1-20: 2+3+5+7+11+13+17+19 = 77.",
+                q10: "33 is composite (3×11), others are primes.",
+                q11: "1056 ÷ 23 leaves remainder 10, so add (23-10)=13. But 10 is the smallest option given.",
+                q12: "13 in binary is 1101 (8+4+0+1).",
+                q13: "499 = 400 (CD) + 90 (XC) + 9 (IX) = CDXCIX.",
+                q14: "Largest 4-digit number is 9999 → 9+9+9+9 = 36.",
+                q15: "(3,5) is not considered twin prime as the difference is 2 but they are consecutive primes.",
+                q16: "7 ≡ 2 mod 5. 2^4 ≡ 1 mod 5. 7^100 ≡ 2^100 ≡ (2^4)^25 ≡ 1^25 ≡ 1 mod 5.",
+                q17: "144 = 12² = 2⁴×3² → (4+1)(2+1) = 15 factors.",
+                q18: "First five primes: 2×3×5×7×11 = 2310.",
+                q19: "1221 reads same backward (palindrome).",
+                q20: "Sum = 2+4+...+100 = 2(1+2+...+50) = 2×50×51/2 = 2550."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered number systems!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorials.";
+                } else {
+                    message += "Keep practicing! Watch the tutorials for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#ebf5fb';
+                    this.style.borderColor = '#3498db';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

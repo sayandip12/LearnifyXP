@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geography Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #27ae60;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #27ae60;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #e8f8f0;
+            border-color: #27ae60;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .term {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Geography Quiz</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. Which is the longest river in the world?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Amazon
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Nile
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Yangtze
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Mississippi
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. Which of these is NOT one of the Great Lakes of North America?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Lake Superior
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Lake Michigan
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Lake Ontario
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Lake Tahoe
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. The Tropic of Cancer does NOT pass through which country?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> India
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Mexico
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Saudi Arabia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Brazil
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. Which of these is the largest desert in the world?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Sahara
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Gobi
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Arabian
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Antarctic
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. The Ring of Fire is associated with:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Earthquakes and volcanoes
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Tropical cyclones
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Coral reefs
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Oil reserves
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. Which of these countries is landlocked?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Brazil
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Mongolia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Italy
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Japan
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. The process by which water moves through the environment is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Carbon cycle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Nitrogen cycle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Water cycle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> Rock cycle
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. Which of these is the highest mountain peak in the world?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> K2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Kangchenjunga
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Mount Everest
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Lhotse
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. The layer of the atmosphere closest to Earth's surface is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Stratosphere
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Mesosphere
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Troposphere
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Thermosphere
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. Which of these countries has the largest population?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> United States
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Indonesia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Brazil
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> China
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. The imaginary line that divides the Earth into Northern and Southern Hemispheres is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Prime Meridian
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Tropic of Cancer
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Equator
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Arctic Circle
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. Which of these is NOT a type of rock?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Igneous
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Metamorphic
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Sedimentary
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> Volcanic
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. The process by which fertile land becomes desert is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Erosion
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Desertification
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Deforestation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Salinization
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. Which of these countries is NOT in Europe?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Switzerland
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Norway
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Kazakhstan
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Portugal
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. The Great Barrier Reef is located off the coast of which country?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Indonesia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Australia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Philippines
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Mexico
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. Which of these is the largest ocean?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Atlantic
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Indian
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Pacific
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Arctic
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. The study of maps and map-making is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Geology
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Cartography
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Topography
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Demography
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. Which of these is NOT a capital city?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Sydney
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Ottawa
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Nairobi
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Brasília
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. The phenomenon where warm ocean currents cause unusual weather patterns is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> La Niña
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> El Niño
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Monsoon
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Jet Stream
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. Which of these countries has the largest area?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Canada
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> China
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> United States
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Brazil
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/playlist?list=PLXLsXwBXH6BmY6OKdQEWudYiNfeXdBfid" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Geography Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('geographyCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('geographyCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'd', q3: 'd', q4: 'd', q5: 'a',
+                q6: 'b', q7: 'c', q8: 'c', q9: 'c', q10: 'd',
+                q11: 'c', q12: 'd', q13: 'b', q14: 'c', q15: 'b',
+                q16: 'c', q17: 'b', q18: 'a', q19: 'b', q20: 'a'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "The Nile River is approximately 6,650 km long, making it the longest river in the world.",
+                q2: "Lake Tahoe is in the Sierra Nevada mountains, while the Great Lakes are Superior, Michigan, Huron, Erie, and Ontario.",
+                q3: "The Tropic of Cancer passes through Mexico, India, and Saudi Arabia, but not Brazil (which is crossed by the Equator).",
+                q4: "The Antarctic Desert is the largest desert in the world, covering about 14 million square kilometers.",
+                q5: "The Ring of Fire is a major area in the Pacific Ocean where many earthquakes and volcanic eruptions occur.",
+                q6: "Mongolia is completely surrounded by land, with no access to any sea or ocean.",
+                q7: "The water cycle describes how water evaporates, forms clouds, precipitates, and flows back to water bodies.",
+                q8: "Mount Everest is the highest peak at 8,848 meters above sea level.",
+                q9: "The troposphere extends from Earth's surface to about 8-15 km high, containing most of our weather.",
+                q10: "China has the world's largest population with over 1.4 billion people.",
+                q11: "The Equator is at 0° latitude, dividing Earth into Northern and Southern Hemispheres.",
+                q12: "The three main rock types are igneous, sedimentary, and metamorphic. Volcanic is a type of igneous rock.",
+                q13: "Desertification is the process by which fertile land becomes desert, typically due to drought or inappropriate agriculture.",
+                q14: "Kazakhstan is in Central Asia, though a small part of it lies west of the Ural River in Europe.",
+                q15: "The Great Barrier Reef is the world's largest coral reef system, located off Australia's northeast coast.",
+                q16: "The Pacific Ocean covers about 63 million square miles, more than all land area combined.",
+                q17: "Cartography is the study and practice of making maps, combining science, aesthetics, and technique.",
+                q18: "Sydney is Australia's largest city, but its capital is Canberra.",
+                q19: "El Niño is a climate pattern that occurs when ocean temperatures in the Pacific become unusually warm.",
+                q20: "Canada is the world's second-largest country by total area (after Russia), covering 9.98 million square kilometers."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You're a geography expert!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You have solid geography knowledge.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial for better clarity.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial to improve your geography knowledge.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#e8f8f0';
+                    this.style.borderColor = '#27ae60';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

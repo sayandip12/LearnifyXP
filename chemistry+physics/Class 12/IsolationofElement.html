@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Quiz - General Principles and Isolation of Elements</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #ebf5fb;
+            border-color: #3498db;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #e67e22;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #d35400;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Chemistry Quiz - General Principles and Isolation of Elements</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. Which of the following is NOT a method of concentration of ores?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Froth flotation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Magnetic separation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Leaching
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Smelting
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. The process of heating the ore strongly in excess of air below its melting point is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Roasting
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Calcination
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Smelting
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Leaching
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. Which metal is extracted by the Mond process?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Aluminum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Nickel
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Copper
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Zinc
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. The chief ore of aluminum is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Bauxite
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Hematite
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Galena
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Sphalerite
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. Which of the following is used as a reducing agent in the extraction of iron from hematite?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Carbon monoxide
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Carbon dioxide
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Calcium carbonate
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Sodium hydroxide
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. The process of removing impurities from crude metal is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Refining
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Smelting
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Roasting
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Calcination
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. Which method is used for refining of copper?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Zone refining
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Electrolytic refining
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Van Arkel method
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> Mond process
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. The impurity present in the ore is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Flux
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Slag
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Gangue
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Mineral
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. Which of the following metals is extracted by electrolytic reduction?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Iron
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Copper
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Aluminum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Zinc
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. The process of heating the ore in the absence of air is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Roasting
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Calcination
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Smelting
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> Leaching
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. Which of the following is an example of a carbonate ore?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Bauxite (Al<sub>2</sub>O<sub>3</sub>.2H<sub>2</sub>O)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Hematite (Fe<sub>2</sub>O<sub>3</sub>)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Siderite (FeCO<sub>3</sub>)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Galena (PbS)
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. Which of the following is used as a flux in the extraction of iron?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Silica (SiO<sub>2</sub>)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Limestone (CaCO<sub>3</sub>)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Coke (C)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> Bauxite (Al<sub>2</sub>O<sub>3</sub>)
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. The method used for refining of titanium metal is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Electrolytic refining
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Zone refining
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Van Arkel method
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Mond process
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. Which of the following metals is obtained by self-reduction?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Aluminum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Copper
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Iron
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Sodium
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. The process of converting hydrated alumina into anhydrous alumina is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Roasting
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Calcination
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Smelting
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Leaching
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. Which of the following is a sulphide ore?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Bauxite
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Hematite
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Galena
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Siderite
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. The slag formed in the extraction of iron is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> FeSiO<sub>3</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> CaSiO<sub>3</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> CaCO<sub>3</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> CaO
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. Which of the following is NOT a method of ore concentration?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Gravity separation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Froth flotation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Magnetic separation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Electrolysis
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. The reducing agent in the thermite process is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Carbon
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Carbon monoxide
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Aluminum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Hydrogen
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. The process of zone refining is used to obtain:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Ultra pure metals
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Alloys
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Minerals
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Slag
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/live/_s9tTXvhkHM?si=jqPwxZc9CSp4maSm" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch General Principles and Isolation of Elements Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('chemistryCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('chemistryCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'd', q2: 'a', q3: 'b', q4: 'a', q5: 'a',
+                q6: 'a', q7: 'b', q8: 'c', q9: 'c', q10: 'b',
+                q11: 'c', q12: 'b', q13: 'c', q14: 'b', q15: 'b',
+                q16: 'c', q17: 'b', q18: 'd', q19: 'c', q20: 'a'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Smelting is a process of extraction, not concentration of ores. Concentration methods include froth flotation, magnetic separation, and leaching.",
+                q2: "Roasting involves heating the ore strongly in excess of air below its melting point, converting sulphide ores to oxides.",
+                q3: "Nickel is purified by the Mond process, which involves formation and decomposition of nickel carbonyl.",
+                q4: "Bauxite (Al<sub>2</sub>O<sub>3</sub>.2H<sub>2</sub>O) is the chief ore of aluminum.",
+                q5: "Carbon monoxide (CO) is the primary reducing agent in the blast furnace for iron extraction from hematite.",
+                q6: "Refining is the process of removing impurities from crude metal to obtain pure metal.",
+                q7: "Copper is refined by electrolytic refining using impure copper as anode and pure copper as cathode.",
+                q8: "Gangue is the unwanted material (impurity) present in the ore along with the mineral.",
+                q9: "Aluminum is extracted by electrolytic reduction of alumina (Al<sub>2</sub>O<sub>3</sub>) dissolved in molten cryolite.",
+                q10: "Calcination is the process of heating the ore in the absence of air to remove volatile impurities.",
+                q11: "Siderite (FeCO<sub>3</sub>) is a carbonate ore of iron, while others are oxide or sulphide ores.",
+                q12: "Limestone (CaCO<sub>3</sub>) is used as a flux in the extraction of iron to remove silica as slag (CaSiO<sub>3</sub>).",
+                q13: "Van Arkel method is used for refining titanium, where impure titanium is converted to titanium tetraiodide which is then decomposed to give pure titanium.",
+                q14: "Copper is obtained by self-reduction where copper sulphide reduces itself to copper metal.",
+                q15: "Calcination removes water of crystallization from hydrated alumina (Al<sub>2</sub>O<sub>3</sub>.2H<sub>2</sub>O) to form anhydrous alumina (Al<sub>2</sub>O<sub>3</sub>).",
+                q16: "Galena (PbS) is a sulphide ore of lead, while others are oxide or carbonate ores.",
+                q17: "Calcium silicate (CaSiO<sub>3</sub>) is the slag formed when limestone reacts with silica in the extraction of iron.",
+                q18: "Electrolysis is a method of extraction or refining, not concentration of ores.",
+                q19: "Aluminum acts as the reducing agent in the thermite process to reduce metal oxides.",
+                q20: "Zone refining is used to obtain ultra pure metals like silicon and germanium by moving a molten zone through the metal."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered the principles of isolation of elements!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most concepts of metallurgy.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial for better clarity.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial to strengthen your concepts.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#ebf5fb';
+                    this.style.borderColor = '#3498db';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

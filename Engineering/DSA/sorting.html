@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Quiz - Sorting Algorithms</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e67e22;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #e67e22;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #fef0e7;
+            border-color: #e67e22;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #d35400;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fef5e7;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .code {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #e67e22;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>DSA Quiz - Sorting Algorithms</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. Which sorting algorithm has the best average-case time complexity?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Bubble Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Quick Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Insertion Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Selection Sort
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. What is the worst-case time complexity of Merge Sort?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> O(n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> O(n log n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> O(n²)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> O(log n)
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. Which sorting algorithm works by repeatedly finding the minimum element?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Insertion Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Bubble Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Selection Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Quick Sort
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. Which sorting algorithm is NOT stable?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Merge Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Insertion Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Quick Sort (typical implementation)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Bubble Sort
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. What is the space complexity of Heap Sort?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> O(n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> O(n log n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> O(1)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> O(log n)
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. Which sorting algorithm is based on the divide-and-conquer approach?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Bubble Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Insertion Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Merge Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Selection Sort
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. What is the best-case time complexity of Bubble Sort?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> O(n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> O(n log n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> O(n²)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> O(1)
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. Which sorting algorithm is most efficient for sorting small arrays?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Merge Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Quick Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Insertion Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Heap Sort
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. What is the worst-case time complexity of Quick Sort?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> O(n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> O(n log n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> O(n²)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> O(log n)
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. Which sorting algorithm is an in-place version of Merge Sort?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Tim Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Block Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Shell Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> There is no in-place version of Merge Sort
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. What is the main advantage of Counting Sort?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Works well for any input size
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Has O(n) time complexity when range is small
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Is an in-place sorting algorithm
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Works well for linked lists
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. Which sorting algorithm is used by Python's built-in sort()?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Quick Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Merge Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Tim Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> Heap Sort
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. What is the time complexity of Radix Sort for n numbers with d digits?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> O(n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> O(n log n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> O(d(n + k)) where k is the base
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> O(n²)
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. Which sorting algorithm is NOT a comparison-based sort?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Quick Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Merge Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Heap Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Counting Sort
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. What is the main disadvantage of Selection Sort?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> It is not stable
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> It has O(n²) time complexity even in best case
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> It requires O(n) extra space
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> It cannot be used for large datasets
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. Which sorting algorithm is most efficient when the input is mostly sorted?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Bubble Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Insertion Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Selection Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Quick Sort
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. What is the main advantage of Shell Sort over Insertion Sort?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> It is stable
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> It has better worst-case time complexity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> It moves elements more than one position at a time
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> It requires less space
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. Which sorting algorithm uses a pivot element?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Merge Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Quick Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Heap Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Radix Sort
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. What is the lower bound for comparison-based sorting algorithms?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> O(n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> O(n log n)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> O(n²)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> O(log n)
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. Which sorting algorithm is hybrid and combines Insertion Sort with Merge Sort?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Tim Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Intro Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Shell Sort
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Cube Sort
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/watch?v=kgBjXUE_Nwc" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Sorting Algorithms Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('dsaCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('dsaCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'b', q3: 'c', q4: 'c', q5: 'c',
+                q6: 'c', q7: 'a', q8: 'c', q9: 'c', q10: 'd',
+                q11: 'b', q12: 'c', q13: 'c', q14: 'd', q15: 'b',
+                q16: 'b', q17: 'c', q18: 'b', q19: 'b', q20: 'a'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Quick Sort has O(n log n) average-case time complexity, which is the best among comparison sorts.",
+                q2: "Merge Sort always has O(n log n) time complexity in all cases (best, average, worst).",
+                q3: "Selection Sort repeatedly finds the minimum element and swaps it with the current position.",
+                q4: "Quick Sort's typical implementation is not stable due to the partitioning process.",
+                q5: "Heap Sort is in-place with O(1) space complexity as it uses the input array to build the heap.",
+                q6: "Merge Sort uses divide-and-conquer by recursively splitting the array and merging sorted halves.",
+                q7: "Bubble Sort can detect a sorted array in O(n) time with an optimized implementation.",
+                q8: "Insertion Sort is efficient for small arrays due to its low overhead and O(n) best-case complexity.",
+                q9: "Quick Sort has O(n²) worst-case when the pivot selection is bad (already sorted or reverse sorted).",
+                q10: "Standard Merge Sort requires O(n) extra space; true in-place Merge Sort is complex and inefficient.",
+                q11: "Counting Sort runs in O(n) when the range of numbers (k) is not significantly larger than n.",
+                q12: "Python uses Tim Sort, a hybrid of Merge Sort and Insertion Sort optimized for real-world data.",
+                q13: "Radix Sort's complexity is O(d(n + k)) where d is digit count and k is the base (usually 10).",
+                q14: "Counting Sort is not comparison-based; it counts occurrences of each value in the range.",
+                q15: "Selection Sort always performs O(n²) comparisons regardless of input order.",
+                q16: "Insertion Sort approaches O(n) time when input is nearly sorted, as it does minimal swaps.",
+                q17: "Shell Sort improves Insertion Sort by comparing/gapping elements far apart initially.",
+                q18: "Quick Sort partitions the array around a pivot element, placing smaller elements before it.",
+                q19: "Ω(n log n) is the theoretical lower bound for comparison-based sorting algorithms.",
+                q20: "Tim Sort combines Merge Sort and Insertion Sort, used in Python and Java for object sorting."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered sorting algorithms!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most sorting concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#fef0e7';
+                    this.style.borderColor = '#e67e22';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

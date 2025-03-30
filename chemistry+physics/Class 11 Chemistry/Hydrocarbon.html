@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Quiz - Hydrocarbons</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #ebf5fb;
+            border-color: #3498db;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Chemistry Quiz - Hydrocarbons</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is the general formula for alkanes?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> C<sub>n</sub>H<sub>2n</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> C<sub>n</sub>H<sub>2n+2</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> C<sub>n</sub>H<sub>2n-2</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> C<sub>n</sub>H<sub>n</sub>
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. Which hydrocarbon has a triple bond between carbon atoms?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Alkane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Alkene
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Alkyne
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Aromatic
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. What is the IUPAC name of CH<sub>3</sub>-CH=CH-CH<sub>3</sub>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Ethene
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Propene
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> But-1-ene
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> But-2-ene
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. Which test is used to distinguish between saturated and unsaturated hydrocarbons?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Flame test
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Bromine water test
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Litmus test
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Iodine test
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. What is the product when methane reacts with chlorine in sunlight?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Methyl chloride
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Methylene chloride
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Chloroform
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. Which hydrocarbon is the main component of natural gas?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Ethane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Propane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Methane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Butane
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. What is the hybridisation of carbon in ethene (C<sub>2</sub>H<sub>4</sub>)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> sp
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> sp<sup>2</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> sp<sup>3</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> sp<sup>3</sup>d
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. Which hydrocarbon is liquid at room temperature?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Methane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Ethane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Hexane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Ethene
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. What is the product of complete combustion of any hydrocarbon?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> CO and H<sub>2</sub>O
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> CO<sub>2</sub> and H<sub>2</sub>O
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> C and H<sub>2</sub>O
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> CO<sub>2</sub> and H<sub>2</sub>
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. Which hydrocarbon is used as a starting material for making plastics like polyethylene?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Methane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Ethane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Ethene
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> Ethyne
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. What type of reaction occurs when alkenes react with hydrogen?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Substitution
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Addition
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Elimination
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Polymerization
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. Which hydrocarbon is the simplest aromatic compound?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Methane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Ethene
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Ethyne
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> Benzene
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. What is the IUPAC name of CH≡CH?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Ethane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Ethene
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Ethyne
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Ethenyne
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. Which hydrocarbon is used in welding torches?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Methane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Ethane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Ethene
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Ethyne
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. What is the product when ethene reacts with bromine water?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Ethane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> 1,2-dibromoethane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Bromoethane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> No reaction
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. Which hydrocarbon is used as LPG (Liquefied Petroleum Gas)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Methane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Ethane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Propane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Butane
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. What is the name of the reaction when an alkane is converted to an alkyl halide?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Addition
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Substitution
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Elimination
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Polymerization
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. Which hydrocarbon is used in the manufacture of synthetic rubber?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Methane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Ethene
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Butadiene
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Benzene
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. What is the name of the process to convert higher hydrocarbons to lower hydrocarbons?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Polymerization
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Cracking
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Hydrogenation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Isomerization
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. Which hydrocarbon is the main component of gasoline?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Methane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Ethane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Octane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Ethene
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/live/EP3ygwMO55g?si=OmUGfbxJ1rm2b5ha" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Hydrocarbons Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('chemistryCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('chemistryCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'c', q3: 'd', q4: 'b', q5: 'd',
+                q6: 'c', q7: 'b', q8: 'c', q9: 'b', q10: 'c',
+                q11: 'b', q12: 'd', q13: 'c', q14: 'd', q15: 'b',
+                q16: 'd', q17: 'b', q18: 'c', q19: 'b', q20: 'c'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Alkanes are saturated hydrocarbons with the general formula C<sub>n</sub>H<sub>2n+2</sub>.",
+                q2: "Alkynes contain a carbon-carbon triple bond (C≡C).",
+                q3: "CH<sub>3</sub>-CH=CH-CH<sub>3</sub> is but-2-ene (4 carbons with double bond between carbons 2 and 3).",
+                q4: "Bromine water decolorizes when it reacts with unsaturated hydrocarbons (alkenes/alkynes).",
+                q5: "CH<sub>4</sub> + Cl<sub>2</sub> → CH<sub>3</sub>Cl → CH<sub>2</sub>Cl<sub>2</sub> → CHCl<sub>3</sub> → CCl<sub>4</sub> (all products form in sunlight).",
+                q6: "Methane (CH<sub>4</sub>) is the primary component (70-90%) of natural gas.",
+                q7: "Ethene has sp<sup>2</sup> hybridized carbon atoms forming a double bond.",
+                q8: "Hexane (C<sub>6</sub>H<sub>14</sub>) is liquid at room temperature (alkanes with 5-17 carbons are liquids).",
+                q9: "Complete combustion: Hydrocarbon + O<sub>2</sub> → CO<sub>2</sub> + H<sub>2</sub>O + heat.",
+                q10: "Ethene (CH<sub>2</sub>=CH<sub>2</sub>) polymerizes to form polyethylene (plastic bags, bottles).",
+                q11: "Addition reaction: R-CH=CH<sub>2</sub> + H<sub>2</sub> → R-CH<sub>2</sub>-CH<sub>3</sub> (hydrogenation).",
+                q12: "Benzene (C<sub>6</sub>H<sub>6</sub>) is the simplest aromatic hydrocarbon with a ring structure.",
+                q13: "CH≡CH is ethyne (common name: acetylene), the simplest alkyne.",
+                q14: "Ethyne (acetylene) burns with a very hot flame (3000°C) used in oxy-acetylene welding.",
+                q15: "CH<sub>2</sub>=CH<sub>2</sub> + Br<sub>2</sub> → Br-CH<sub>2</sub>-CH<sub>2</sub>-Br (1,2-dibromoethane).",
+                q16: "LPG is primarily butane (C<sub>4</sub>H<sub>10</sub>) with some propane (C<sub>3</sub>H<sub>8</sub>).",
+                q17: "Substitution reaction: R-H + X<sub>2</sub> → R-X + HX (X = halogen).",
+                q18: "Butadiene (CH<sub>2</sub>=CH-CH=CH<sub>2</sub>) is a monomer for synthetic rubber production.",
+                q19: "Cracking breaks large hydrocarbon molecules into smaller, more useful ones (e.g., gasoline).",
+                q20: "Gasoline contains mainly octane (C<sub>8</sub>H<sub>18</sub>) and similar hydrocarbons (C<sub>5</sub>-C<sub>10</sub>)."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered Hydrocarbons!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most hydrocarbon concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#ebf5fb';
+                    this.style.borderColor = '#3498db';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

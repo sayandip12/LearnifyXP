@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geography Quiz - Disaster Management</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #ebf5fb;
+            border-color: #3498db;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .term {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Geography Quiz - Disaster Management</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is the primary goal of disaster management?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> To predict all natural disasters accurately
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> To prevent all disasters from occurring
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> To reduce the impact of disasters through preparedness and response
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> To relocate all populations from disaster-prone areas
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. Which phase of disaster management occurs before a disaster strikes?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Response
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Recovery
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Mitigation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Rehabilitation
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. What is the difference between a hazard and a disaster?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> A hazard is natural, while a disaster is man-made
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> A hazard becomes a disaster when it affects human populations
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> There is no difference - the terms are interchangeable
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> A disaster is predictable, while a hazard is not
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. Which organization is primarily responsible for disaster management in India?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Indian Red Cross Society
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> National Disaster Management Authority (NDMA)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> United Nations Development Programme
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> World Health Organization
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. What does the term "vulnerability" refer to in disaster management?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> The frequency of disasters in a region
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> The characteristics of a community that make it susceptible to hazards
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> The strength of buildings to withstand earthquakes
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> The number of deaths caused by a disaster
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. Which of the following is an example of a structural mitigation measure?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Community awareness programs
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Early warning systems
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Building earthquake-resistant structures
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Emergency evacuation drills
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. What is the purpose of a Community-Based Disaster Risk Reduction (CBDRR) program?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> To centralize all disaster response efforts with the government
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> To empower local communities to take active roles in disaster preparedness
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> To replace professional emergency services with volunteer efforts
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> To focus only on post-disaster relief efforts
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. Which of the following is NOT a natural disaster?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Earthquake
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Tsunami
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Industrial chemical leak
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Volcanic eruption
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. What is the most important factor in determining the severity of a disaster's impact?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> The magnitude of the hazard
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> The level of community preparedness
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> The speed of emergency response
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> A combination of hazard intensity and community vulnerability
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. What does the "Sendai Framework" primarily address?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Climate change mitigation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Disaster risk reduction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Refugee resettlement
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> Economic development
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. Which of the following is an example of a technological disaster?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Hurricane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Nuclear power plant accident
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Earthquake
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Drought
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. What is the primary purpose of an Early Warning System?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> To predict disasters years in advance
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> To provide timely information to enable preventive action
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> To replace the need for disaster preparedness
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> To control media reporting during disasters
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. Which of these is a key principle of disaster management?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Focus only on response and recovery
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Centralize all decision-making
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Integrate risk reduction into development planning
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Rely primarily on international aid
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. What does the term "resilience" mean in disaster management?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> The ability to prevent all disasters
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> The capacity to recover quickly from difficulties
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> The strength of emergency response teams
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> The number of disaster shelters available
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. Which of these is NOT typically included in a family disaster preparedness kit?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> First aid supplies
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Non-perishable food and water
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Flashlight and batteries
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Expensive jewelry
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. What is the main purpose of conducting disaster drills?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> To scare people into being prepared
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> To practice and improve response procedures
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> To test emergency equipment
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> To identify who would panic in a real disaster
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. Which international organization coordinates humanitarian response to disasters?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> United Nations Office for Disaster Risk Reduction (UNDRR)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> World Health Organization (WHO)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> United Nations Office for the Coordination of Humanitarian Affairs (OCHA)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. What is the most effective way to reduce disaster risk in the long term?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Building more emergency shelters
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Investing in sustainable development
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Increasing international aid budgets
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Training more emergency responders
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. Which of these is a psychological first aid principle?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Provide immediate counseling to all survivors
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Encourage people to talk about their experiences when they're ready
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Diagnose mental health disorders on site
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Prescribe medication for anxiety
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. What is the primary benefit of involving local communities in disaster risk reduction?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> It reduces the need for government intervention
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> It ensures solutions are culturally appropriate and sustainable
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> It eliminates the need for professional emergency services
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> It allows for faster distribution of international aid
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://youtu.be/qFpQCrAn4Og?si=07K6bEG7wxvCe0AZ" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Disaster Management Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('geographyCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('geographyCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'c', q2: 'c', q3: 'b', q4: 'b', q5: 'b',
+                q6: 'c', q7: 'b', q8: 'c', q9: 'd', q10: 'b',
+                q11: 'b', q12: 'b', q13: 'c', q14: 'b', q15: 'd',
+                q16: 'b', q17: 'd', q18: 'b', q19: 'b', q20: 'b'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Disaster management aims to reduce disaster impacts through preparedness, mitigation, response, and recovery measures.",
+                q2: "Mitigation includes actions taken to reduce or eliminate long-term risk to people and property from hazards.",
+                q3: "A hazard is a potential threat, while a disaster occurs when the hazard affects vulnerable human populations.",
+                q4: "The NDMA is the apex body for disaster management in India, established under the Disaster Management Act, 2005.",
+                q5: "Vulnerability refers to the conditions determined by physical, social, economic, and environmental factors that increase susceptibility to hazards.",
+                q6: "Structural measures involve physical construction to reduce risks, like building dams, shelters, or earthquake-resistant structures.",
+                q7: "CBDRR empowers communities to analyze their risks and take appropriate actions to reduce vulnerability.",
+                q8: "Industrial chemical leaks are technological (man-made) disasters, not natural disasters.",
+                q9: "Disaster impact depends on both the hazard's intensity and the community's vulnerability and preparedness.",
+                q10: "The Sendai Framework (2015-2030) is a global blueprint for disaster risk reduction adopted by UN member states.",
+                q11: "Technological disasters originate from industrial accidents, infrastructure failures, or hazardous materials.",
+                q12: "Early warning systems aim to provide timely information to enable individuals and communities to take protective action.",
+                q13: "Integrating risk reduction into development ensures sustainable and resilient communities.",
+                q14: "Resilience is the ability to prepare for, recover from, and adapt to adverse conditions.",
+                q15: "A disaster kit should include essentials for survival, not valuables like jewelry.",
+                q16: "Drills help identify weaknesses in plans and improve coordination and response times.",
+                q17: "All these UN agencies play roles in disaster response, with OCHA coordinating international humanitarian response.",
+                q18: "Sustainable development addresses root causes of vulnerability like poverty, poor planning, and environmental degradation.",
+                q19: "Psychological first aid involves providing comfort, practical assistance, and not forcing people to talk before they're ready.",
+                q20: "Community involvement ensures solutions are appropriate, owned by locals, and thus more sustainable."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered disaster management concepts!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most disaster management principles.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial for better clarity.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial to improve your knowledge.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#ebf5fb';
+                    this.style.borderColor = '#3498db';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

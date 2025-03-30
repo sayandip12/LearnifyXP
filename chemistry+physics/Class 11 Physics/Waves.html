@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Quiz - Waves</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #ebf5fb;
+            border-color: #3498db;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Physics Quiz - Waves</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is the definition of a wave?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> A disturbance that transfers energy from one place to another
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> The movement of particles through a medium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> A stationary pattern of particles
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> A force acting over a distance
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. Which type of wave requires a medium to propagate?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Electromagnetic wave
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Mechanical wave
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Light wave
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. What is the distance between two consecutive crests of a wave called?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Amplitude
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Frequency
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Wavelength
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Period
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. The speed of a wave is equal to:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Wavelength × amplitude
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Frequency × amplitude
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Wavelength × frequency
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Period × frequency
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. Which phenomenon occurs when a wave bends around obstacles or through openings?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Reflection
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Refraction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Diffraction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Interference
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. What happens when two waves meet in phase (crest meets crest)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Destructive interference occurs
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Constructive interference occurs
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> The waves cancel each other
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> The waves stop moving
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. Which type of wave has vibrations perpendicular to the direction of wave travel?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Longitudinal wave
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Transverse wave
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Surface wave
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> Pressure wave
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. The bending of waves as they pass from one medium to another is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Reflection
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Refraction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Diffraction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Dispersion
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. What is the frequency of a wave that completes 20 cycles in 5 seconds?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> 0.25 Hz
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> 4 Hz
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> 25 Hz
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> 100 Hz
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. The Doppler effect describes:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Change in wave speed due to medium changes
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Apparent change in frequency due to relative motion
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Wave interference patterns
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> Energy loss in waves over distance
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. What is the amplitude of a wave?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> The number of waves passing a point per second
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> The distance between two consecutive crests
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> The maximum displacement from the equilibrium position
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> The time for one complete wave cycle
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. Sound waves are examples of:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Transverse waves
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Longitudinal waves
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Electromagnetic waves
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> Standing waves
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. What happens to the wavelength of a wave when its frequency increases?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> It increases proportionally
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> It decreases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> It remains the same
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> It becomes zero
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. A standing wave is produced when:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Two identical waves travel in the same direction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Two identical waves travel in opposite directions
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> A wave reflects off a fixed boundary
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Both b and c
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. The pitch of a sound is determined by its:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Amplitude
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Frequency
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Wavelength
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Speed
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. Which of the following electromagnetic waves has the highest frequency?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Radio waves
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Microwaves
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Visible light
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Gamma rays
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. The phenomenon that explains why the sky appears blue is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Refraction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Rayleigh scattering
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Dispersion
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Total internal reflection
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. What is the period of a wave with frequency 50 Hz?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> 0.02 s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> 0.05 s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> 20 s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> 50 s
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. In a transverse wave, the particles of the medium move:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Parallel to the wave direction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Perpendicular to the wave direction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> In circular paths
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> They don't move at all
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. The principle of superposition states that when two waves meet:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> The larger wave cancels the smaller one
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> The resultant displacement is the sum of individual displacements
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> The waves reflect off each other
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> The waves stop moving
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/live/s-u1YoZNFTw?si=s2FOHspNv_9x6TYG" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Waves Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('physicsCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('physicsCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'a', q2: 'b', q3: 'c', q4: 'c', q5: 'c',
+                q6: 'b', q7: 'b', q8: 'b', q9: 'b', q10: 'b',
+                q11: 'c', q12: 'b', q13: 'b', q14: 'd', q15: 'b',
+                q16: 'd', q17: 'b', q18: 'a', q19: 'b', q20: 'b'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "A wave is a disturbance that transfers energy from one place to another without transferring matter.",
+                q2: "Mechanical waves (like sound or water waves) require a medium, while electromagnetic waves (like light) can travel through vacuum.",
+                q3: "Wavelength (λ) is the distance between two consecutive identical points on a wave (crest to crest or trough to trough).",
+                q4: "Wave speed (v) = wavelength (λ) × frequency (f). This is the fundamental wave equation.",
+                q5: "Diffraction is the bending of waves around obstacles or through openings, most noticeable when the obstacle/opening is similar in size to the wavelength.",
+                q6: "Constructive interference occurs when waves meet in phase (crest meets crest), resulting in increased amplitude.",
+                q7: "In transverse waves (like light or waves on a string), the vibrations are perpendicular to the direction of wave travel.",
+                q8: "Refraction is the bending of waves when they pass from one medium to another with different wave speeds, due to the change in speed.",
+                q9: "Frequency = number of cycles/time = 20 cycles/5 s = 4 Hz.",
+                q10: "The Doppler effect is the apparent change in frequency (and wavelength) due to relative motion between the source and observer.",
+                q11: "Amplitude is the maximum displacement from the equilibrium position and is related to the wave's energy.",
+                q12: "Sound waves are longitudinal waves where particles vibrate parallel to the direction of wave travel, creating compressions and rarefactions.",
+                q13: "From v = fλ, if speed is constant, increasing frequency means wavelength must decrease (inverse relationship).",
+                q14: "Standing waves result from interference between two identical waves traveling in opposite directions, often when a wave reflects off a boundary.",
+                q15: "Pitch is our perception of frequency - higher frequency sounds are perceived as higher pitch.",
+                q16: "Gamma rays have the highest frequency (and shortest wavelength) in the electromagnetic spectrum.",
+                q17: "Rayleigh scattering causes shorter wavelengths (blue light) to scatter more in the atmosphere, making the sky appear blue.",
+                q18: "Period (T) = 1/frequency = 1/50 Hz = 0.02 s.",
+                q19: "In transverse waves, particle motion is perpendicular to wave direction, while in longitudinal waves it's parallel.",
+                q20: "The superposition principle states that when waves overlap, the resultant displacement is the algebraic sum of the individual displacements."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered wave physics!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most wave concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#ebf5fb';
+                    this.style.borderColor = '#3498db';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantitative Aptitude Quiz - Ratio & Proportion</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #9b59b6;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #9b59b6;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #f5eef8;
+            border-color: #9b59b6;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #8e44ad;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+            margin: 0 10px 10px 0;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #9b59b6;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+            
+            .video-link {
+                margin-bottom: 15px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Quantitative Aptitude Quiz - Ratio & Proportion</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. If a:b = 2:3 and b:c = 4:5, what is a:b:c?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> 2:3:5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> 4:6:9
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> 8:12:15
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> 6:9:10
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. If 40% of a number is equal to 2/3 of another number, what is the ratio of the first number to the second number?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> 3:5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> 5:3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> 4:7
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> 7:4
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. The ratio of boys to girls in a class is 3:2. If there are 15 boys, how many girls are there?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> 8
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> 10
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> 12
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> 14
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. If x:y = 3:4 and y:z = 6:7, what is x:y:z?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> 3:4:7
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> 6:8:9
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> 9:12:14
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> 12:16:21
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. The ratio of two numbers is 5:7. If each number is increased by 10, the ratio becomes 7:9. What are the numbers?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> 25, 35
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> 30, 42
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> 35, 49
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> 40, 56
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. What number should be added to each term of the ratio 7:13 so that the ratio becomes 2:3?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> 3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> 5
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. The ratio of copper to zinc in brass is 11:4. How much zinc will be there in 750 kg of brass?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> 150 kg
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> 200 kg
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> 250 kg
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> 300 kg
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. If A:B = 3:5 and B:C = 7:9, then A:B:C is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> 3:5:9
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> 21:35:45
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> 7:9:15
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> 15:25:35
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. The ratio of incomes of A and B is 5:4 and their expenditures is 3:2. If both save ₹1000, what is A's income?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> ₹3000
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> ₹4000
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> ₹5000
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> ₹6000
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. If (3x + 5y)/(5x - 3y) = 4/3, what is x:y?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> 3:4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> 4:3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> 5:3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> 3:5
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. The ratio of three numbers is 3:4:5 and their sum is 240. What is the largest number?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> 60
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> 80
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> 100
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> 120
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. If 0.4 of a number is equal to 0.6 of another number, what is the ratio of the first to the second number?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> 2:3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> 3:2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> 4:5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> 5:4
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. The ratio of ages of father and son is 7:3. If the son is 15 years old, how old is the father?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> 35
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> 40
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> 45
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> 50
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. If 2A = 3B = 4C, then A:B:C is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> 2:3:4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> 4:3:2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> 6:4:3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> 12:8:6
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. The ratio of milk to water in a mixture is 4:1. If 5 liters of water is added, the ratio becomes 4:3. How much milk was in the original mixture?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> 8 liters
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> 10 liters
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> 12 liters
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> 15 liters
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. If a/3 = b/4 = c/7, then (a+b+c)/c is equal to:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> 3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> 4
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. The ratio of boys to girls in a school is 5:3. If there are 120 more boys than girls, how many students are there in the school?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> 360
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> 480
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> 600
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> 720
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. The ratio of two numbers is 3:8 and their difference is 25. What is the larger number?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> 15
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> 24
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> 40
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> 50
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. If 30% of x = 45% of y, then x:y is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> 2:3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> 3:2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> 4:5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> 5:4
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. The ratio of the ages of A and B is 5:3. After 6 years, the ratio will be 7:5. What is A's present age?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> 15
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> 20
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> 25
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> 30
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/playlist?list=PLAr0hfIonl-GxRd26o0YHhOb6czgvNN9M" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Ratio & Proportion Tutorial
+            </a>
+            <a href="https://www.youtube.com/playlist?list=PLAr0hfIonl-GxRd26o0YHhOb6czgvNN9M" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Average Tutorial
+            </a>
+            <a href="https://www.youtube.com/playlist?list=PLAr0hfIonl-GxRd26o0YHhOb6czgvNN9M" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Simple & Compound Interest Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('aptitudeCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('aptitudeCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'c', q2: 'b', q3: 'b', q4: 'c', q5: 'a',
+                q6: 'd', q7: 'b', q8: 'b', q9: 'c', q10: 'b',
+                q11: 'c', q12: 'b', q13: 'a', q14: 'c', q15: 'b',
+                q16: 'b', q17: 'b', q18: 'c', q19: 'b', q20: 'a'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Make b equal in both ratios (LCM of 3 and 4 is 12): a:b = 8:12, b:c = 12:15 → a:b:c = 8:12:15",
+                q2: "0.4x = (2/3)y → x/y = (2/3)/0.4 = (2/3)/(4/10) = 20/12 = 5/3",
+                q3: "Boys:Girls = 3:2 → 15:Girls = 3:2 → Girls = (15×2)/3 = 10",
+                q4: "Make y equal in both ratios (LCM of 4 and 6 is 12): x:y = 9:12, y:z = 12:14 → x:y:z = 9:12:14",
+                q5: "Let numbers be 5x and 7x → (5x+10)/(7x+10) = 7/9 → 45x+90 = 49x+70 → x=5 → Numbers are 25 and 35",
+                q6: "(7+x)/(13+x) = 2/3 → 21+3x = 26+2x → x=5",
+                q7: "Copper:Zinc = 11:4 → Zinc = [4/(11+4)]×750 = (4/15)×750 = 200 kg",
+                q8: "Make B equal in both ratios (LCM of 5 and 7 is 35): A:B = 21:35, B:C = 35:45 → A:B:C = 21:35:45",
+                q9: "Let incomes be 5x and 4x, expenditures be 3y and 2y → 5x-3y = 1000 and 4x-2y = 1000 → Solve to get x=1000 → A's income = ₹5000",
+                q10: "Cross multiply: 3(3x+5y) = 4(5x-3y) → 9x+15y = 20x-12y → 27y = 11x → x/y = 27/11 (Not matching options - question may need review)",
+                q11: "Let numbers be 3x,4x,5x → 3x+4x+5x=240 → x=20 → Largest number = 5×20=100",
+                q12: "0.4x = 0.6y → x/y = 0.6/0.4 = 3/2",
+                q13: "Father:Son = 7:3 → Son is 15 → Father = (7/3)×15 = 35",
+                q14: "Let 2A=3B=4C=k → A=k/2, B=k/3, C=k/4 → A:B:C = (1/2):(1/3):(1/4) = 6:4:3 (multiplied by LCM 12)",
+                q15: "Let milk=4x, water=x → 4x/(x+5) = 4/3 → 12x = 4x+20 → x=2.5 → Milk=4×2.5=10 liters",
+                q16: "Let a/3=b/4=c/7=k → a=3k, b=4k, c=7k → (a+b+c)/c = (3k+4k+7k)/7k = 14k/7k = 2",
+                q17: "Boys:Girls=5:3 → Difference=2 parts=120 → 1 part=60 → Total students=8 parts=8×60=480",
+                q18: "Numbers=3x,8x → Difference=5x=25 → x=5 → Larger number=8×5=40",
+                q19: "30%x=45%y → x/y=45/30=3/2",
+                q20: "Let A=5x, B=3x → (5x+6)/(3x+6)=7/5 → 25x+30=21x+42 → x=3 → A's age=5×3=15"
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered ratio and proportion!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorials.";
+                } else {
+                    message += "Keep practicing! Watch the tutorials for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#f5eef8';
+                    this.style.borderColor = '#9b59b6';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

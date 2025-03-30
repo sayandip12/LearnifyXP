@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Quiz - Electric Charges and Fields</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #8e44ad;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #8e44ad;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #f5eef8;
+            border-color: #8e44ad;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #8e44ad;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #7d3c98;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f4ecf7;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #8e44ad;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Physics Quiz - Electric Charges and Fields</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is the SI unit of electric charge?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Ampere
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Volt
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Coulomb
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Ohm
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. The force between two point charges is described by:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Gauss's law
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Coulomb's law
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Faraday's law
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Ohm's law
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. The electric field due to a point charge varies with distance r as:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> 1/r
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> 1/r²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> r
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> r²
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. The principle that describes the total electric flux through a closed surface is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Coulomb's law
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Gauss's law
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Ampere's law
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Faraday's law
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. The electric field inside a charged spherical conductor is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Constant
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Proportional to r
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Infinite
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. The work done in moving a charge in an electric field does NOT depend on:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> The magnitude of the charge
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> The path taken
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> The electric field
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> The initial and final positions
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. The electric field lines around a positive point charge are:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Circular
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Radially inward
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Radially outward
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> Parallel lines
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. The electric potential due to a point charge at a distance r is proportional to:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> r
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> r²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> 1/r
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> 1/r²
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. Two equal and opposite charges separated by a small distance form a:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Electric monopole
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Electric dipole
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Electric quadrupole
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Magnetic dipole
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. The torque on an electric dipole in a uniform electric field is maximum when the angle between the dipole and field is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> 0°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> 45°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> 90°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> 180°
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. The electric flux through a closed surface depends on:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Only the charges inside the surface
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Only the charges outside the surface
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> All charges present
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> The shape of the surface
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. The dielectric constant of a medium is the ratio of:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Electric field in vacuum to that in medium
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Electric field in medium to that in vacuum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Permittivity of medium to permittivity of vacuum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> Permittivity of vacuum to permittivity of medium
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. The electric field at a point due to an infinite plane sheet of charge is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Proportional to distance from sheet
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Inversely proportional to distance from sheet
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Independent of distance from sheet
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Zero
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. The electric potential energy of two point charges is positive when:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Both charges are positive
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Both charges are negative
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Charges have opposite signs
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> The charges are very close to each other
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. The electric field is always perpendicular to:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Equipotential surfaces
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Lines of force
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Conducting surfaces
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Charged surfaces
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. The capacitance of a parallel plate capacitor increases when:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Plate area decreases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Distance between plates increases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> A dielectric is inserted
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> The charge on plates decreases
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. The electric field inside a uniformly charged spherical shell is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Constant and non-zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Proportional to r
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Inversely proportional to r²
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. The dimensional formula for electric flux is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> [ML²T⁻³A⁻¹]
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> [ML³T⁻³A⁻¹]
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> [ML²T⁻²A⁻¹]
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> [ML³T⁻²A⁻¹]
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. When a dielectric is placed in an electric field, the field inside the dielectric:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Increases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Decreases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Remains unchanged
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Becomes zero
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. The work done in moving a charge along an equipotential surface is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Positive
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Negative
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Infinite
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/watch?v=example" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Electric Charges and Fields Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('physicsCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('physicsCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'c', q2: 'b', q3: 'b', q4: 'b', q5: 'c',
+                q6: 'b', q7: 'c', q8: 'c', q9: 'b', q10: 'c',
+                q11: 'a', q12: 'c', q13: 'c', q14: 'a', q15: 'a',
+                q16: 'c', q17: 'c', q18: 'b', q19: 'b', q20: 'c'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "The coulomb (C) is the SI unit of electric charge, defined as the charge transported by a constant current of one ampere in one second.",
+                q2: "Coulomb's law: F = k(q₁q₂)/r² describes the electrostatic force between two point charges.",
+                q3: "Electric field E = kq/r² follows an inverse square law with distance from a point charge.",
+                q4: "Gauss's law: Φ = q/ε₀ relates electric flux through a closed surface to enclosed charge.",
+                q5: "Inside a conductor in electrostatic equilibrium, the electric field is zero (charges reside on surface).",
+                q6: "Electrostatic force is conservative - work depends only on endpoints, not path taken.",
+                q7: "Field lines originate from positive charges and radiate outward (terminate at negative charges).",
+                q8: "Electric potential V = kq/r is inversely proportional to distance from point charge.",
+                q9: "An electric dipole consists of equal and opposite charges (+q and -q) separated by distance d.",
+                q10: "Torque τ = pEsinθ is maximum at θ=90° (p = dipole moment, E = electric field).",
+                q11: "Gauss's law states flux depends only on enclosed charge, independent of outside charges or surface shape.",
+                q12: "Dielectric constant K = ε/ε₀, where ε is permittivity of medium and ε₀ is permittivity of free space.",
+                q13: "For infinite plane sheet: E = σ/2ε₀ (constant, independent of distance from sheet).",
+                q14: "Potential energy U = k(q₁q₂)/r is positive when charges have same sign (repulsive force).",
+                q15: "Electric field lines are always perpendicular to equipotential surfaces (no work is done along them).",
+                q16: "C = Kε₀A/d increases with dielectric (K), plate area (A), and decreases with plate separation (d).",
+                q17: "Using Gauss's law, E=0 inside a charged spherical shell (no enclosed charge).",
+                q18: "Electric flux Φ = E·A has dimensions [ML³T⁻³A⁻¹] (E = [MLT⁻³A⁻¹], A = [L²]).",
+                q19: "Electric field in dielectric E = E₀/K, where K>1 is dielectric constant (field decreases).",
+                q20: "Equipotential surfaces have constant potential (ΔV=0 ⇒ W=qΔV=0 for movement along them)."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered electric charges and fields!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most electrostatics concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#f5eef8';
+                    this.style.borderColor = '#8e44ad';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

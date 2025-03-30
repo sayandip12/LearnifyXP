@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Quiz - Chemical Bonding</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #9b59b6;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #9b59b6;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #f5eef8;
+            border-color: #9b59b6;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #8e44ad;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #9b59b6;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Chemistry Quiz - Chemical Bonding</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. Which type of bond involves the sharing of electron pairs between atoms?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Ionic bond
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Covalent bond
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Metallic bond
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Hydrogen bond
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. What type of bond forms between a metal and a nonmetal?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Covalent bond
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Ionic bond
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Metallic bond
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Polar bond
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. Which molecule has a nonpolar covalent bond?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> H₂O
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> HCl
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> CO₂
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> NH₃
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. What is the bond angle in a tetrahedral molecule?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> 90°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> 104.5°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> 109.5°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> 120°
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. Which of these is an example of a coordinate covalent bond?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> H₂
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> NH₄⁺
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> NaCl
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> MgO
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. What type of hybridization occurs in the carbon atoms of ethene (C₂H₄)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> sp
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> sp²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> sp³
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> sp³d
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. Which molecule has a linear shape?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> H₂O
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> CO₂
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> NH₃
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> CH₄
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. What is the main type of bonding in metals?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Ionic bonding
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Covalent bonding
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Metallic bonding
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Hydrogen bonding
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. Which of these intermolecular forces is the strongest?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> London dispersion forces
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Dipole-dipole interactions
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Hydrogen bonding
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Ion-dipole interactions
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. What is the molecular geometry of a molecule with 3 bonding pairs and 1 lone pair?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Tetrahedral
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Trigonal pyramidal
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Bent
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> Trigonal planar
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. Which of these elements is most electronegative?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Sodium (Na)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Carbon (C)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Oxygen (O)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Fluorine (F)
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. What is the bond order in the O₂ molecule?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> 1.5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> 3
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. Which molecule has a dipole moment of zero?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> H₂O
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> NH₃
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> CO₂
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> HCl
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. What is the hybridization of the central atom in SF₆?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> sp
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> sp²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> sp³
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> sp³d²
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. Which of these is NOT a characteristic of ionic compounds?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> High melting points
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Conduct electricity when molten
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Form crystal lattices
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Consist of discrete molecules
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. What type of orbital overlap occurs in a sigma (σ) bond?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> End-to-end
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Side-by-side
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Hybrid
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Parallel
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. Which molecule has the shortest bond length?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> N₂
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> O₂
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> F₂
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Cl₂
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. What is the bond angle in a trigonal planar molecule?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> 90°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> 109.5°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> 120°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> 180°
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. Which of these is an example of a network covalent solid?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Sodium chloride (NaCl)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Diamond (C)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Copper (Cu)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Ice (H₂O)
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. What is the molecular geometry of a molecule with 2 bonding pairs and 2 lone pairs?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Linear
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Trigonal planar
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Tetrahedral
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Bent
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/live/z2-EeL9Qvf4?si=pUg7-TQ0WiI3UqKT" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Chemical Bonding Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('chemistryCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('chemistryCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'b', q3: 'c', q4: 'c', q5: 'b',
+                q6: 'b', q7: 'b', q8: 'c', q9: 'c', q10: 'b',
+                q11: 'd', q12: 'c', q13: 'c', q14: 'd', q15: 'd',
+                q16: 'a', q17: 'a', q18: 'c', q19: 'b', q20: 'd'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Covalent bonds involve sharing of electron pairs between atoms.",
+                q2: "Ionic bonds form between metals (electron donors) and nonmetals (electron acceptors).",
+                q3: "CO₂ is nonpolar because its linear shape causes dipole moments to cancel out.",
+                q4: "The tetrahedral angle is 109.5° (e.g., CH₄).",
+                q5: "NH₄⁺ has a coordinate covalent bond where N donates both electrons to form a bond with H⁺.",
+                q6: "Ethene has sp² hybridization with one double bond (σ + π) between carbons.",
+                q7: "CO₂ is linear (O=C=O) with 180° bond angles.",
+                q8: "Metallic bonding involves a 'sea' of delocalized electrons surrounding positive metal ions.",
+                q9: "Hydrogen bonds (H with F, O, or N) are the strongest intermolecular forces.",
+                q10: "3 bonding pairs + 1 lone pair = trigonal pyramidal geometry (e.g., NH₃).",
+                q11: "Fluorine is the most electronegative element (4.0 on Pauling scale).",
+                q12: "O₂ has a double bond (bond order = 2).",
+                q13: "CO₂ is linear and symmetrical, so dipole moments cancel out.",
+                q14: "SF₆ has octahedral geometry with sp³d² hybridization.",
+                q15: "Ionic compounds form extended crystal lattices, not discrete molecules.",
+                q16: "Sigma bonds form from end-to-end orbital overlap (head-on approach).",
+                q17: "N₂ has a triple bond (shortest bond length among these diatomic molecules).",
+                q18: "Trigonal planar molecules have 120° bond angles (e.g., BF₃).",
+                q19: "Diamond is a network covalent solid with each carbon bonded to 4 others in a 3D lattice.",
+                q20: "2 bonding pairs + 2 lone pairs = bent geometry (e.g., H₂O)."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered chemical bonding!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#f5eef8';
+                    this.style.borderColor = '#9b59b6';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Quiz - Oscillations</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f39c12;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #f39c12;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #fef5e7;
+            border-color: #f39c12;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fef9e7;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #f39c12;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Physics Quiz - Oscillations</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is the time period of a simple pendulum of length L?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> 2π√(g/L)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> 2π√(L/g)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> √(g/L)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> √(L/g)
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. The displacement of a particle in SHM is given by x = A sin(ωt + φ). What does φ represent?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Amplitude
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Angular frequency
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Phase constant
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Time period
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. The restoring force in SHM is proportional to:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Displacement
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Square of displacement
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Velocity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Acceleration
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. The energy of a simple harmonic oscillator is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Entirely kinetic
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Entirely potential
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Constant
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Zero
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. The phase difference between displacement and acceleration in SHM is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> 0°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> 90°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> 180°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> 270°
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. The time period of a mass-spring system depends on:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Mass only
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Spring constant only
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Both mass and spring constant
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Neither mass nor spring constant
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. In damped oscillations, the amplitude:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Increases exponentially
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Decreases exponentially
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Remains constant
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> Increases linearly
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. Resonance occurs when the driving frequency is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Much less than natural frequency
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Much greater than natural frequency
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Equal to natural frequency
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Unrelated to natural frequency
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. The kinetic energy of a particle in SHM is maximum when:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Displacement is maximum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Displacement is zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Acceleration is maximum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Potential energy is maximum
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. The phase difference between velocity and displacement in SHM is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> 0°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> 90°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> 180°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> 270°
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. The angular frequency (ω) of a simple pendulum depends on:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Mass of the bob
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Length of the string
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Amplitude of oscillation
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Both mass and length
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. In forced oscillations, the amplitude is maximum when:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Damping is zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Driving frequency equals natural frequency
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Driving force is maximum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. The time period of a simple pendulum on the moon (where g is 1/6th of Earth's) would:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Decrease
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Increase
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Remain the same
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Become zero
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. The displacement equation x = A cos(ωt) represents SHM with initial phase:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> 0°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> 45°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> 90°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> 180°
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. The total energy of a particle executing SHM with amplitude A is proportional to:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> A
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> A²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> √A
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> 1/A
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. In SHM, when the displacement is half the amplitude, what fraction of total energy is kinetic?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> 1/4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> 1/2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> 3/4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> 1/8
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. The quality factor (Q-factor) of an oscillating system is a measure of:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Energy loss
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Sharpness of resonance
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Damping
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. A spring-mass system is taken into space where gravity is negligible. Its time period will:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Increase
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Decrease
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Remain unchanged
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Become infinite
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. The equation of motion for SHM is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> d²x/dt² = -ωx
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> d²x/dt² = -ω²x
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> dx/dt = -ωx
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> dx/dt = -ω²x
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. In a spring-block system, if the spring is cut into two equal parts and one part is used with the same block, the new frequency will be:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> 1/√2 times original
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> √2 times original
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> 2 times original
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Same as original
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/watch?v=example" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Oscillations Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('physicsCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('physicsCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'c', q3: 'a', q4: 'c', q5: 'c',
+                q6: 'c', q7: 'b', q8: 'c', q9: 'b', q10: 'b',
+                q11: 'b', q12: 'b', q13: 'b', q14: 'a', q15: 'b',
+                q16: 'c', q17: 'b', q18: 'c', q19: 'b', q20: 'b'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Time period T = 2π√(L/g) for a simple pendulum (independent of mass).",
+                q2: "φ is the phase constant that determines initial position at t=0.",
+                q3: "Restoring force F = -kx (Hooke's law), proportional to displacement x.",
+                q4: "Total energy E = (1/2)kA² remains constant, converting between KE and PE.",
+                q5: "Acceleration a = -ω²x is always opposite to displacement (180° phase difference).",
+                q6: "T = 2π√(m/k) depends on both mass (m) and spring constant (k).",
+                q7: "In damped oscillations, amplitude A = A₀e^(-bt/2m) decreases exponentially.",
+                q8: "Resonance occurs when driving frequency matches natural frequency (ω_d = ω₀).",
+                q9: "KE is maximum at equilibrium position (x=0) where velocity is maximum.",
+                q10: "Velocity leads displacement by 90° in SHM (v = ωAcos(ωt+φ) vs x = Asin(ωt+φ)).",
+                q11: "ω = √(g/L) for simple pendulum - depends only on length (L) and gravity (g).",
+                q12: "Maximum amplitude occurs at resonance (ω_d = ω₀), especially with low damping.",
+                q13: "Since T ∝ 1/√g, lower g on moon increases time period (slower oscillations).",
+                q14: "x = A cos(ωt) implies initial phase φ = 0° (at t=0, x=A).",
+                q15: "Total energy E = (1/2)kA² is proportional to amplitude squared.",
+                q16: "At x=A/2, PE = (1/4)E_total ⇒ KE = (3/4)E_total.",
+                q17: "Q-factor = ω₀/Δω measures resonance sharpness (higher Q = sharper peak).",
+                q18: "T = 2π√(m/k) is independent of g - depends only on mass and spring constant.",
+                q19: "The defining differential equation of SHM: d²x/dt² + ω²x = 0.",
+                q20: "Cutting spring in half doubles spring constant (k'=2k), so new frequency f' = (1/2π)√(2k/m) = √2f."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered oscillations!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most oscillation concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#fef5e7';
+                    this.style.borderColor = '#f39c12';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

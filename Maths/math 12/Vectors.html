@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quiz - Vectors</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #9b59b6;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #9b59b6;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #f5eef8;
+            border-color: #9b59b6;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #8e44ad;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f0e6f6;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #9b59b6;
+            font-weight: bold;
+        }
+        
+        .vector {
+            font-style: italic;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Math/Physics Quiz - Vectors</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. Which of these quantities is a vector?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Mass
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Temperature
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Velocity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Energy
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. What is the magnitude of the vector <span class="vector">a</span> = (3, 4)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> 5
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> 7
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> 12
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> 25
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. What is the dot product of <span class="vector">a</span> = (1, 2) and <span class="vector">b</span> = (3, 4)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> 3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> 8
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> 11
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> 24
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. Two vectors are perpendicular when their dot product is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> -1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> 0
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Equal to their magnitudes
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. What is the cross product of <span class="vector">i</span> × <span class="vector">j</span> in 3D space?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> <span class="vector">0</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> <span class="vector">i</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> <span class="vector">j</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> <span class="vector">k</span>
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. What is the angle between vectors <span class="vector">a</span> = (1, 0) and <span class="vector">b</span> = (0, 1)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> 0°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> 45°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> 90°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> 180°
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. What is the result of <span class="vector">a</span> + <span class="vector">b</span> when <span class="vector">a</span> = (2, 3) and <span class="vector">b</span> = (4, -1)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> (6, 2)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> (6, 3)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> (2, 4)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> (-2, 4)
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. What is the scalar projection of <span class="vector">a</span> = (3, 4) onto <span class="vector">b</span> = (1, 0)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> 0
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> 3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> 4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> 5
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. Which operation is NOT defined for vectors?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Addition
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Subtraction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Multiplication
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Division
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. What is the unit vector in the direction of <span class="vector">v</span> = (3, 4)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> (1, 1)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> (0.6, 0.8)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> (3, 4)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> (0.75, 1)
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. What is the cross product of two parallel vectors?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> A unit vector
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> The zero vector
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> A vector perpendicular to both
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> A scalar
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. What is the magnitude of the cross product |<span class="vector">a</span> × <span class="vector">b</span>| equal to?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> |<span class="vector">a</span>| + |<span class="vector">b</span>|
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> |<span class="vector">a</span>| |<span class="vector">b</span>| sinθ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> |<span class="vector">a</span>| |<span class="vector">b</span>| cosθ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> |<span class="vector">a</span>| |<span class="vector">b</span>| tanθ
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. Which of these represents the vector from point A(1,2) to point B(4,6)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> (3, 4)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> (5, 8)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> (-3, -4)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> (4, 6)
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. What is the result of 2 × <span class="vector">a</span> when <span class="vector">a</span> = (1, 3)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> (1, 3)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> (2, 3)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> (2, 6)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> (1, 6)
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. Which of these is the correct formula for the dot product?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> |<span class="vector">a</span>| |<span class="vector">b</span>| sinθ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> |<span class="vector">a</span>| |<span class="vector">b</span>| cosθ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> |<span class="vector">a</span>| + |<span class="vector">b</span>| cosθ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> |<span class="vector">a</span>| - |<span class="vector">b</span>| sinθ
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. What is the direction of the cross product <span class="vector">a</span> × <span class="vector">b</span>?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Parallel to <span class="vector">a</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Parallel to <span class="vector">b</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Perpendicular to both <span class="vector">a</span> and <span class="vector">b</span>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> At 45° to both <span class="vector">a</span> and <span class="vector">b</span>
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. What is the result of <span class="vector">i</span> · (<span class="vector">j</span> × <span class="vector">k</span>)?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> 0
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> -1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Undefined
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. Which of these represents the right-hand rule for cross products?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Point fingers in direction of first vector, curl towards second vector, thumb shows direction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Point fingers in direction of second vector, curl towards first vector, thumb shows direction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Point thumb in direction of first vector, index finger in direction of second vector, middle finger shows direction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> All of the above are correct
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. What is the angle between a vector and itself?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> 0°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> 45°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> 90°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> 180°
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. What is the magnitude of the sum of two unit vectors at 60° to each other?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> √2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> √3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> 2
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/watch?v=5z3KHq0U6Fk" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Vectors Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('mathPhysicsCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('mathPhysicsCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'c', q2: 'a', q3: 'c', q4: 'c', q5: 'd',
+                q6: 'c', q7: 'a', q8: 'b', q9: 'd', q10: 'b',
+                q11: 'b', q12: 'b', q13: 'a', q14: 'c', q15: 'b',
+                q16: 'c', q17: 'b', q18: 'a', q19: 'a', q20: 'c'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Velocity has both magnitude and direction, making it a vector quantity.",
+                q2: "Magnitude = √(3² + 4²) = √(9 + 16) = √25 = 5.",
+                q3: "Dot product = (1×3) + (2×4) = 3 + 8 = 11.",
+                q4: "The dot product of perpendicular vectors is always zero.",
+                q5: "In right-handed coordinate systems, <span class='vector'>i</span> × <span class='vector'>j</span> = <span class='vector'>k</span>.",
+                q6: "These are the standard basis vectors which are perpendicular (90°).",
+                q7: "Vector addition is component-wise: (2+4, 3+(-1)) = (6, 2).",
+                q8: "Scalar projection = (3×1 + 4×0)/√(1²+0²) = 3/1 = 3.",
+                q9: "Vector division is not a defined operation in vector algebra.",
+                q10: "Unit vector = (3/5, 4/5) = (0.6, 0.8).",
+                q11: "The cross product of parallel vectors is the zero vector.",
+                q12: "The magnitude of the cross product equals the area of the parallelogram formed by the two vectors.",
+                q13: "Vector AB = B - A = (4-1, 6-2) = (3, 4).",
+                q14: "Scalar multiplication multiplies each component: 2 × (1,3) = (2,6).",
+                q15: "The dot product formula is |<span class='vector'>a</span>| |<span class='vector'>b</span>| cosθ.",
+                q16: "The cross product is perpendicular to both original vectors.",
+                q17: "<span class='vector'>j</span> × <span class='vector'>k</span> = <span class='vector'>i</span>, so <span class='vector'>i</span> · <span class='vector'>i</span> = 1.",
+                q18: "Right-hand rule: point fingers in direction of first vector, curl towards second vector, thumb shows cross product direction.",
+                q19: "A vector makes a 0° angle with itself.",
+                q20: "Magnitude = √(1² + 1² + 2×1×1×cos60°) = √(1 + 1 + 1) = √3."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered vectors!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most vector concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#f5eef8';
+                    this.style.borderColor = '#9b59b6';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

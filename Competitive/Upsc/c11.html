@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art & Culture Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #9b59b6;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #9b59b6;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #f5eef8;
+            border-color: #9b59b6;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #8e44ad;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f0e6f6;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .art-term {
+            font-style: italic;
+            color: #9b59b6;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Art & Culture Quiz</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Indian Art & Culture -->
+            <div class="question" id="q1">
+                <h3>1. Which classical dance form originated in the temples of Tamil Nadu?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Kathak
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Bharatanatyam
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Kathakali
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Odissi
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <div class="question" id="q2">
+                <h3>2. The Ajanta Caves are famous for their:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Buddhist rock-cut architecture
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Jain sculptures
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Hindu temple carvings
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Islamic calligraphy
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- World Art -->
+            <div class="question" id="q3">
+                <h3>3. Who painted the famous artwork "The Starry Night"?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Pablo Picasso
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Vincent van Gogh
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Claude Monet
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Leonardo da Vinci
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <div class="question" id="q4">
+                <h3>4. The Renaissance period began in which country?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> France
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Germany
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Italy
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> England
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Indian Heritage -->
+            <div class="question" id="q5">
+                <h3>5. Which of these is NOT one of the Seven Wonders of the Ancient World?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Great Pyramid of Giza
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Hanging Gardens of Babylon
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Taj Mahal
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Colossus of Rhodes
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Art Movements -->
+            <div class="question" id="q6">
+                <h3>6. Which art movement is characterized by dream-like scenes and unexpected juxtapositions?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Impressionism
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Cubism
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Surrealism
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Expressionism
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Indian Music -->
+            <div class="question" id="q7">
+                <h3>7. The musical instrument "Sitar" was popularized internationally by:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Zakir Hussain
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Ravi Shankar
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Lata Mangeshkar
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> A.R. Rahman
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- World Architecture -->
+            <div class="question" id="q8">
+                <h3>8. The architectural style of the Taj Mahal is best described as:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Mughal
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Dravidian
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Gothic
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Baroque
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Indian Literature -->
+            <div class="question" id="q9">
+                <h3>9. The ancient Indian text "Natya Shastra" deals primarily with:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Medicine
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Performing arts
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Astronomy
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Statecraft
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- World Artists -->
+            <div class="question" id="q10">
+                <h3>10. Who sculpted the famous statue "David"?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Donatello
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Michelangelo
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Bernini
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> Rodin
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Indian Paintings -->
+            <div class="question" id="q11">
+                <h3>11. The miniature painting tradition of Rajasthan is called:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Madhubani
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Warli
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Pahari
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Rajput
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- World Heritage -->
+            <div class="question" id="q12">
+                <h3>12. Which of these is a traditional Japanese theater form?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Kabuki
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Peking Opera
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Kathakali
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> Flamenco
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Indian Handicrafts -->
+            <div class="question" id="q13">
+                <h3>13. The art of blue pottery is traditionally associated with which Indian state?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Gujarat
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Rajasthan
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Tamil Nadu
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> West Bengal
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- World Literature -->
+            <div class="question" id="q14">
+                <h3>14. Who wrote the epic poem "The Divine Comedy"?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Homer
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Dante Alighieri
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Virgil
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Ovid
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Indian Festivals -->
+            <div class="question" id="q15">
+                <h3>15. The Hornbill Festival is celebrated in which Indian state?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Kerala
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Nagaland
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Karnataka
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Punjab
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Art Techniques -->
+            <div class="question" id="q16">
+                <h3>16. In art, what is the term "fresco" used to describe?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> A sculpture technique
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> A painting technique on wet plaster
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> A type of engraving
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> A textile art form
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Indian Monuments -->
+            <div class="question" id="q17">
+                <h3>17. The Sun Temple at Konark is dedicated to which Hindu deity?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Shiva
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Vishnu
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Surya
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Ganesha
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- World Music -->
+            <div class="question" id="q18">
+                <h3>18. Which musical instrument is traditionally associated with flamenco music?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Accordion
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Guitar
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Violin
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Piano
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Indian Textiles -->
+            <div class="question" id="q19">
+                <h3>19. The traditional art of Kalamkari belongs to which Indian states?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Andhra Pradesh and Telangana
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Gujarat and Rajasthan
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Tamil Nadu and Kerala
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Punjab and Haryana
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- World Artists -->
+            <div class="question" id="q20">
+                <h3>20. Who is known for creating the "Campbell's Soup Cans" artwork?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Jackson Pollock
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Andy Warhol
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Salvador Dalí
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Mark Rothko
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/playlist?list=PL0CDU9VfXs_x3UhofXrsVq3xjOqrtLis_" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Art & Culture Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('artCultureCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('artCultureCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'a', q3: 'b', q4: 'c', q5: 'c',
+                q6: 'c', q7: 'b', q8: 'a', q9: 'b', q10: 'b',
+                q11: 'd', q12: 'a', q13: 'b', q14: 'b', q15: 'b',
+                q16: 'b', q17: 'c', q18: 'b', q19: 'a', q20: 'b'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Bharatanatyam originated in Tamil Nadu temples as a sacred dance dedicated to Hindu deities.",
+                q2: "Ajanta Caves feature Buddhist rock-cut monuments and paintings dating from 2nd century BCE to 480 CE.",
+                q3: "Vincent van Gogh painted 'The Starry Night' in 1889 while in an asylum in Saint-Rémy, France.",
+                q4: "The Renaissance began in 14th century Italy, marking the transition from medieval to modern times.",
+                q5: "The Taj Mahal, built in 1632-53, is a UNESCO World Heritage Site but not an Ancient Wonder.",
+                q6: "Surrealism, led by Salvador Dalí, explored the unconscious mind through dream imagery.",
+                q7: "Ravi Shankar popularized the sitar globally, influencing musicians like George Harrison of The Beatles.",
+                q8: "The Taj Mahal represents Mughal architecture with Persian, Islamic and Indian influences.",
+                q9: "Natya Shastra by Bharata Muni is an ancient treatise on performing arts (dance, drama, music).",
+                q10: "Michelangelo's marble 'David' (1501-04) is a masterpiece of Renaissance sculpture in Florence.",
+                q11: "Rajput paintings flourished in royal courts of Rajasthan from 16th-19th centuries.",
+                q12: "Kabuki, dating to 1603, combines drama, dance and music with elaborate makeup and costumes.",
+                q13: "Jaipur's blue pottery uses quartz and raw glaze, distinguished by its Persian-blue color.",
+                q14: "Dante's 'Divine Comedy' (1320) describes his journey through Hell, Purgatory and Paradise.",
+                q15: "Nagaland's Hornbill Festival (Dec 1-10) showcases tribal culture, dances and crafts.",
+                q16: "Fresco involves painting water-based pigments on freshly applied lime plaster (e.g., Sistine Chapel).",
+                q17: "Konark's 13th-century Sun Temple is shaped like a giant chariot with 12 pairs of stone wheels.",
+                q18: "The Spanish guitar is central to flamenco's passionate singing (cante), dance (baile) and music.",
+                q19: "Kalamkari ('pen-work') from Andhra/Telangana uses natural dyes for intricate mythological scenes.",
+                q20: "Andy Warhol's 1962 'Campbell's Soup Cans' is a landmark in Pop Art, celebrating consumer culture."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You're an Art & Culture expert!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You have strong cultural knowledge.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the tutorial for better grasp.";
+                } else {
+                    message += "Keep exploring art and culture! Watch the tutorial to learn more.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#f5eef8';
+                    this.style.borderColor = '#9b59b6';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

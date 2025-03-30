@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematics Quiz - Mathematical Induction</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #ebf5fb;
+            border-color: #3498db;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e3f2fd;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #e67e22;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #d35400;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Mathematics Quiz - Mathematical Induction</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is the first step in a mathematical induction proof?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Assume the statement is true for n = k
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Prove the statement for n = k+1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Prove the base case (usually n=1)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Conclude the statement is true for all n
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. The principle of mathematical induction is based on which axiom of integers?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Commutative property
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Well-ordering principle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Distributive property
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Associative property
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. What is the second step in mathematical induction called?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Base case
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Inductive hypothesis
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Inductive step
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Conclusion
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. Which of the following statements is most suitable for proof by induction?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> The square root of 2 is irrational
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> 1 + 2 + 3 + ... + n = n(n+1)/2 for all positive integers n
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> There are infinitely many prime numbers
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> The sum of angles in a triangle is 180 degrees
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. In strong induction, what do we assume in the inductive step?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> The statement is true for n=1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> The statement is true for n=k
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> The statement is true for all integers ≤ k
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> The statement is true for n=k+1
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. What is the main logical structure of mathematical induction?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Contradiction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Contrapositive
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Modus ponens
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Direct proof
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. When proving 7ⁿ - 1 is divisible by 6 for all n ≥ 1, what would be the inductive hypothesis?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> 7¹ - 1 = 6 is divisible by 6
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> 7ᵏ - 1 is divisible by 6 for some k ≥ 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> 7ᵏ⁺¹ - 1 is divisible by 6
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> 7ⁿ - 1 is divisible by 6 for all n ≥ 1
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. Which of the following is NOT a variation of mathematical induction?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Strong induction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Structural induction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Transfinite induction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Deductive induction
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. In proving inequalities by induction, what additional care is often needed?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Using double induction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Proving multiple base cases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Ensuring all steps preserve the inequality direction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> Using contradiction in the inductive step
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. What is the purpose of the base case in mathematical induction?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> To establish the starting point of the infinite domino effect
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> To assume the statement is true for general case
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> To prove the statement for all integers
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> To conclude the proof
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. Which of these can be proved using mathematical induction?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> The Fundamental Theorem of Calculus
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> The Binomial Theorem
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> The Pythagorean Theorem
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> The Intermediate Value Theorem
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. What is the main difference between weak and strong induction?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Strong induction requires more base cases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Strong induction assumes the statement is true for all previous cases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Weak induction can only be used for divisibility proofs
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> There is no difference - the terms are interchangeable
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. When might you need multiple base cases in an induction proof?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> When the inductive step relies on more than one previous case
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> When the statement is false for n=1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> When using strong induction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> When the proof is by contradiction
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. What is structural induction used for?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Proving statements about recursively defined structures
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Proving geometric theorems
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Proving statements about continuous functions
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Proving statements about prime numbers
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. In an induction proof, what is typically the hardest part?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> The base case
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> The inductive hypothesis
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> The inductive step
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> The conclusion
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. What is the minimum number of base cases needed for standard mathematical induction?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> 0
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Depends on the problem
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. Which of these recursive definitions would be suitable for proof by induction?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Fibonacci sequence: F(n) = F(n-1) + F(n-2)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Factorial: n! = n × (n-1)!
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Sum of first n integers: S(n) = n + S(n-1)
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. What is the common analogy used to explain mathematical induction?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> A chain reaction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Falling dominoes
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> A ladder
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. Why is mathematical induction considered a valid proof technique?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> Because it's based on the well-ordering principle of natural numbers
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> Because it's been used successfully for centuries
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> Because it's accepted by mathematical convention
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Because it's equivalent to direct proof
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. What is the final step in a mathematical induction proof?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Restating the inductive hypothesis
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Concluding the statement is true for all n ≥ base case
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Proving one more case beyond the inductive step
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Checking the base case again
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/watch?v=dMn5w4_ztSw" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Mathematical Induction Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('mathCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('mathCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'c', q2: 'b', q3: 'c', q4: 'b', q5: 'c',
+                q6: 'c', q7: 'b', q8: 'd', q9: 'c', q10: 'a',
+                q11: 'b', q12: 'b', q13: 'a', q14: 'a', q15: 'c',
+                q16: 'b', q17: 'd', q18: 'd', q19: 'a', q20: 'b'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "The first step is always to prove the base case (usually n=1), which establishes the starting point.",
+                q2: "Mathematical induction is equivalent to the well-ordering principle of natural numbers.",
+                q3: "The inductive step shows that if the statement holds for n=k, then it holds for n=k+1.",
+                q4: "Mathematical induction is ideal for proving statements about all positive integers, like summation formulas.",
+                q5: "Strong induction assumes the statement is true for all integers up to k, not just for k itself.",
+                q6: "Induction follows the logical structure of modus ponens: if P(k) ⇒ P(k+1) and P(1) is true, then P(n) is true for all n.",
+                q7: "The inductive hypothesis assumes the statement is true for some arbitrary k ≥ 1 (that 7ᵏ - 1 is divisible by 6).",
+                q8: "Deductive induction is not a standard term in mathematics. The others are valid induction variations.",
+                q9: "With inequalities, each step must preserve the inequality direction (e.g., multiplying both sides by a positive number).",
+                q10: "The base case starts the 'domino effect' - proving P(1) is true makes all other cases fall in sequence.",
+                q11: "The Binomial Theorem (a+b)ⁿ = Σ C(n,k)aⁿ⁻ᵏbᵏ can be proved by induction on n.",
+                q12: "Strong induction assumes P(1) ∧ P(2) ∧ ... ∧ P(k) to prove P(k+1), while weak induction just assumes P(k).",
+                q13: "Multiple base cases are needed when the inductive step relies on more than one previous case (like in Fibonacci proofs).",
+                q14: "Structural induction proves statements about recursively defined structures like trees, lists, or formulas.",
+                q15: "The inductive step often requires creativity to connect P(k) to P(k+1), while the base case is usually straightforward.",
+                q16: "Standard induction requires at least one base case, though some problems may need more depending on the inductive step.",
+                q17: "All these recursive definitions are suitable for induction proofs as they define terms based on previous terms.",
+                q18: "All these analogies are commonly used - dominoes (knocking over), ladder (climbing), chain reaction (triggering next case).",
+                q19: "Induction is valid because it's equivalent to the well-ordering principle that every non-empty set of natural numbers has a least element.",
+                q20: "The conclusion formally states that by the principle of mathematical induction, the statement holds for all n ≥ base case."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered mathematical induction!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most concepts of induction.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial for better clarity.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial to strengthen your understanding.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#ebf5fb';
+                    this.style.borderColor = '#3498db';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

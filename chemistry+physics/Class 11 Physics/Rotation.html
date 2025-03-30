@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Quiz - Rotational Motion</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e74c3c;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #e74c3c;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #fdedec;
+            border-color: #e74c3c;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fce8e6;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Physics Quiz - Rotational Motion</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is the rotational analog of mass in linear motion?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Torque
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Moment of inertia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Angular velocity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Angular momentum
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. The SI unit of torque is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Joule
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Newton
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Newton-meter
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Watt
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. Which of the following is the correct formula for angular momentum?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> L = Iω
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> L = τω
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> L = Iα
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> L = τ/ω
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. The rotational analog of Newton's second law (F=ma) is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> τ = Iω
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> τ = Iα
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> τ = Lω
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> τ = L/ω
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. What happens to the moment of inertia when mass is distributed farther from the axis of rotation?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Decreases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Remains the same
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Increases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Becomes zero
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. A figure skater pulls in their arms during a spin. What happens to their angular velocity?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Decreases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Remains constant
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Increases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Becomes zero
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. The angular acceleration of a rotating object is zero when:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Net torque is zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Angular velocity is zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Moment of inertia is zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> Angular momentum is zero
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. What is the moment of inertia of a solid sphere of mass M and radius R about its diameter?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> (1/2)MR²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> (2/5)MR²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> (2/3)MR²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> (1/12)MR²
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. The kinetic energy of a rotating rigid body is given by:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> (1/2)Iω
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> (1/2)Iω²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Iω²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> (1/2)Iα
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. What is conserved when no external torque acts on a system?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Angular velocity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Moment of inertia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Angular momentum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> Rotational kinetic energy
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. The angular velocity of Earth's rotation about its axis is approximately:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> 0.0000727 rad/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> 0.000727 rad/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> 0.00727 rad/s
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> 0.0727 rad/s
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. A wheel starts from rest and reaches an angular velocity of 20 rad/s in 5 seconds. Its angular acceleration is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> 1 rad/s²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> 2 rad/s²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> 4 rad/s²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> 5 rad/s²
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. The parallel axis theorem relates:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Torque and angular momentum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Moment of inertia about two parallel axes
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Angular velocity and linear velocity
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Rotational and translational kinetic energy
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. What is the relationship between linear velocity (v) and angular velocity (ω) for a rotating object?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> v = ω/r
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> v = ωr
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> v = ω²r
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> v = ω/r²
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. The moment of inertia of a thin rod of mass M and length L about an axis perpendicular to the rod and passing through its center is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> (1/12)ML²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> (1/3)ML²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> (1/2)ML²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> ML²
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. A flywheel increases its angular speed from 10 rad/s to 50 rad/s in 10 seconds. How many revolutions does it make during this time?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> 100/π
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> 200/π
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> 300/π
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> 400/π
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. The condition for rolling without slipping is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> v = rω
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> v = r/ω
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> v = rα
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> v = ω²r
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. The total kinetic energy of a rolling object is the sum of:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Rotational and potential energy
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Translational and rotational kinetic energy
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Linear and angular momentum
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Centripetal and centrifugal force
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. A torque of 10 N·m is applied to a wheel with moment of inertia 2 kg·m². The angular acceleration produced is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> 0.2 rad/s²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> 2 rad/s²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> 5 rad/s²
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> 20 rad/s²
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. The angular momentum of a system is conserved when:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> No net force acts on the system
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> No net torque acts on the system
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> The moment of inertia is constant
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> The angular velocity is constant
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/watch?v=example" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Rotational Motion Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('physicsCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('physicsCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'c', q3: 'a', q4: 'b', q5: 'c',
+                q6: 'c', q7: 'a', q8: 'b', q9: 'b', q10: 'c',
+                q11: 'a', q12: 'c', q13: 'b', q14: 'b', q15: 'a',
+                q16: 'c', q17: 'a', q18: 'b', q19: 'c', q20: 'b'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Moment of inertia (I) is the rotational analog of mass in linear motion, representing resistance to angular acceleration.",
+                q2: "Torque is measured in newton-meters (N·m), which is dimensionally equivalent to joules but not used for energy in this context.",
+                q3: "Angular momentum (L) = moment of inertia (I) × angular velocity (ω).",
+                q4: "The rotational form of Newton's second law: Torque (τ) = moment of inertia (I) × angular acceleration (α).",
+                q5: "Moment of inertia increases with the square of the distance from the axis (I = Σmr²).",
+                q6: "Conservation of angular momentum: As moment of inertia decreases (arms pulled in), angular velocity increases to keep L = Iω constant.",
+                q7: "When net torque is zero, angular acceleration is zero (from τ = Iα), though the object may still be rotating with constant angular velocity.",
+                q8: "For a solid sphere about its diameter: I = (2/5)MR².",
+                q9: "Rotational kinetic energy = (1/2)Iω², analogous to (1/2)mv² for linear motion.",
+                q10: "Angular momentum is conserved when no external torque acts on the system (law of conservation of angular momentum).",
+                q11: "Earth's angular velocity = 2π radians/24 hours ≈ 7.27 × 10⁻⁵ rad/s.",
+                q12: "α = Δω/Δt = (20 rad/s - 0)/5 s = 4 rad/s².",
+                q13: "Parallel axis theorem: I = I_cm + Md², where I_cm is about center of mass and d is distance to parallel axis.",
+                q14: "The linear velocity of a point on a rotating object is v = rω, where r is distance from axis.",
+                q15: "For a thin rod about its center: I = (1/12)ML².",
+                q16: "θ = ω_avg × t = [(10+50)/2] × 10 = 300 rad. Revolutions = 300/(2π) = 300/π.",
+                q17: "Rolling without slipping requires v = rω, where v is linear velocity and ω is angular velocity.",
+                q18: "Total KE = (1/2)mv² (translational) + (1/2)Iω² (rotational).",
+                q19: "From τ = Iα → α = τ/I = 10/2 = 5 rad/s².",
+                q20: "Angular momentum is conserved when net external torque is zero, similar to linear momentum conservation when net force is zero."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered rotational motion!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most rotational concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#fdedec';
+                    this.style.borderColor = '#e74c3c';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

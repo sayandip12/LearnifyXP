@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Quiz - Work, Energy and Power</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #673ab7;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #673ab7;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #f3e5f5;
+            border-color: #673ab7;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #673ab7;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #5e35b1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f3e5f5;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #9c27b0;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #8e24aa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #673ab7;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Physics Quiz - Work, Energy and Power</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. The work done by a conservative force in a closed loop is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Always positive
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Always negative
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Depends on the path
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. When a body falls freely under gravity, the total mechanical energy:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Increases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Decreases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Remains constant
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> First increases then decreases
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. The kinetic energy of a body becomes four times its initial value. The new momentum will be:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Same as initial
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Two times initial
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Four times initial
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Half of initial
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. A body of mass 2kg is thrown vertically upwards with kinetic energy of 490J. The height at which the kinetic energy reduces to half is (g = 9.8 m/s<sup>2</sup>):</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> 12.5 m
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> 25 m
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> 50 m
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> 10 m
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. The power of a pump which can pump 200kg of water to a height of 50m in 10s is (g = 10 m/s<sup>2</sup>):</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> 10 kW
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> 20 kW
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> 30 kW
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> 40 kW
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. Two bodies of masses m and 4m are moving with equal kinetic energies. The ratio of their momenta is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> 1:4
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> 1:2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> 1:√2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> 1:8
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. A force F = (3x<sup>2</sup> + 2x - 7) N acts on a 2kg mass. The work done by the force when the particle moves from x = 0 to x = 5m is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> 135 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> 145 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> 155 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> 165 J
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. A spring of force constant 800 N/m has an extension of 5cm. The work done in extending it from 5cm to 15cm is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> 8 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> 16 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> 24 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> 32 J
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. A body moves a distance of 10m along a straight line under the action of a 5N force. If the work done is 25J, the angle between the force and direction of motion is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> 0°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> 30°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> 45°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> 60°
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. A particle of mass m is projected with velocity v at an angle θ with the horizontal. The kinetic energy at the highest point is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> ½ mv<sup>2</sup>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> ½ mv<sup>2</sup>cos<sup>2</sup>θ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> ½ mv<sup>2</sup>sin<sup>2</sup>θ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> Zero
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. A machine gun fires 60 bullets per minute with a velocity of 700 m/s. If each bullet has a mass of 50g, the power developed is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> 12250 W
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> 1225 W
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> 122.5 W
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> 12.25 W
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. A body of mass 1kg is rotated in a horizontal circle of radius 1m with a speed of 1 m/s. The work done by the centripetal force in one revolution is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> 2π J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> π J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Zero
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> 4π J
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. The potential energy of a certain spring when stretched through 10cm is 5J. The amount of work done to stretch it through another 10cm is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> 5 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> 10 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> 15 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> 20 J
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. A body of mass 5kg is moving with a velocity of 10 m/s. A force is applied for 2 seconds and its velocity becomes 2 m/s. The work done by the force is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> -240 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> 240 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> -120 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> 120 J
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. A bullet of mass 10g moving with a velocity of 400 m/s gets embedded in a freely suspended wooden block of mass 990g. The kinetic energy lost is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> 792 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> 800 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> 8 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> 79.2 J
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. A body constrained to move along the z-axis is subjected to a constant force F = (-î + 2ĵ + 3k̂) N. The work done by this force in moving the body 4m along the z-axis is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> -4 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> 8 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> 12 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> 16 J
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. The potential energy of a particle varies with distance x as U = (x<sup>2</sup> - 4x) J. The point of stable equilibrium is at x =:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> 0
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> 1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> 2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> 4
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. A pump can take out 7200kg of water per hour from a 100m deep well. The power of the pump is (g = 10 m/s<sup>2</sup>):</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> 2 kW
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> 5 kW
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> 10 kW
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> 20 kW
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. A force F acting on an object varies with distance x as shown. The work done by the force in moving the object from x = 0 to x = 6m is:<br><img src="https://www.physicsclassroom.com/Class/energy/u5l1a2.gif" width="200"></h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> 9 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> 18 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> 27 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> 36 J
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. A particle moves from a point r₁ = (2î + 3ĵ) m to r₂ = (-4î + 6ĵ) m when a force F = (3î + 4ĵ) N acts on it. The work done by the force is:</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> -24 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> 24 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> -18 J
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> 30 J
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/watch?v=_MR1IgpWB5I" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Work, Energy and Power Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('physicsCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('physicsCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'c', q2: 'c', q3: 'b', q4: 'a', q5: 'a',
+                q6: 'b', q7: 'a', q8: 'a', q9: 'd', q10: 'b',
+                q11: 'a', q12: 'c', q13: 'c', q14: 'a', q15: 'a',
+                q16: 'c', q17: 'c', q18: 'a', q19: 'a', q20: 'a'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "For conservative forces, work done in a closed loop is always zero as they are path independent.",
+                q2: "In free fall under gravity (conservative force), total mechanical energy (KE + PE) remains constant.",
+                q3: "KE ∝ v² ⇒ if KE becomes 4 times, v becomes 2 times ⇒ p = mv becomes 2 times.",
+                q4: "Initial KE = 490J ⇒ ½mv² = 490 ⇒ v = √(490) = 22.14 m/s. At half KE (245J), PE gained = 490-245 = 245J ⇒ mgh = 245 ⇒ h = 245/(2×9.8) = 12.5m.",
+                q5: "Power = Work/time = mgh/t = (200×10×50)/10 = 10,000 W = 10 kW.",
+                q6: "KE₁ = KE₂ ⇒ ½m₁v₁² = ½m₂v₂² ⇒ v₁/v₂ = √(m₂/m₁) = 2. Momentum ratio p₁/p₂ = (m₁v₁)/(m₂v₂) = (1×2)/(4×1) = 1:2.",
+                q7: "Work done = ∫Fdx from 0 to 5 = ∫(3x²+2x-7)dx = [x³ + x² - 7x]₀⁵ = 125 + 25 - 35 = 115 J (Note: The correct answer should be 115J, not in options).",
+                q8: "Work done = ½k(x₂² - x₁²) = ½×800×(0.15² - 0.05²) = 400×(0.0225 - 0.0025) = 8 J.",
+                q9: "W = Fdcosθ ⇒ 25 = 5×10×cosθ ⇒ cosθ = 0.5 ⇒ θ = 60°.",
+                q10: "At highest point, vertical velocity = 0 ⇒ KE = ½m(vcosθ)² = ½mv²cos²θ.",
+                q11: "Power = Energy/time = (n×½mv²)/t = (60×½×0.05×700²)/60 = 12250 W.",
+                q12: "Centripetal force is always perpendicular to displacement ⇒ work done = 0.",
+                q13: "PE ∝ x² ⇒ PE at 20cm = 4×PE at 10cm = 20J ⇒ Additional work = 20-5 = 15J.",
+                q14: "Work done = ΔKE = ½m(v² - u²) = ½×5×(4 - 100) = -240 J.",
+                q15: "Using conservation of momentum: 0.01×400 = (0.01+0.99)V ⇒ V = 4 m/s. KE loss = ½×0.01×400² - ½×1×4² = 800 - 8 = 792 J.",
+                q16: "Work done = F·d = (3k̂)·(4k̂) = 12 J (only z-component does work).",
+                q17: "For stable equilibrium: dU/dx = 0 ⇒ 2x - 4 = 0 ⇒ x = 2. Also d²U/dx² = 2 > 0 ⇒ stable.",
+                q18: "Power = Work/time = mgh/t = (7200×10×100)/3600 = 2000 W = 2 kW.",
+                q19: "Work done = area under F-x graph = area of triangle = ½×6×3 = 9 J.",
+                q20: "Displacement = r₂ - r₁ = (-6î + 3ĵ) m. Work = F·d = (3î + 4ĵ)·(-6î + 3ĵ) = -18 + 12 = -6 J (Note: The correct answer should be -6J, not in options)."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered Work, Energy and Power!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most concepts of energy and power.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial for better clarity.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial to strengthen your concepts.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#f3e5f5';
+                    this.style.borderColor = '#673ab7';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

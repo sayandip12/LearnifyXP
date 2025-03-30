@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Affairs Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e74c3c;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #e74c3c;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #fdedec;
+            border-color: #e74c3c;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fbeeec;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .current-event {
+            font-family: 'Georgia', serif;
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Current Affairs Quiz</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. Who was appointed as the new Chief Justice of India in 2023?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> D.Y. Chandrachud
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> N.V. Ramana
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> U.U. Lalit
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Sharad Arvind Bobde
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. Which country hosted the G20 Summit in 2023?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> India
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Indonesia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Brazil
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Japan
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. Which Indian state recently implemented the Uniform Civil Code?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Gujarat
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Uttarakhand
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Madhya Pradesh
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> Assam
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. What is the name of India's first indigenous aircraft carrier that was commissioned in 2023?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> INS Vikramaditya
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> INS Vikrant
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> INS Viraat
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> INS Vishal
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. Which country recently changed its name to Türkiye?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Turkey
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Turkmenistan
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Tunisia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Tajikistan
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. Who won the Nobel Peace Prize in 2023?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> Malala Yousafzai
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> Narges Mohammadi
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> Maria Ressa
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> Dmitry Muratov
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. Which Indian city hosted the Chess Olympiad in 2023?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> New Delhi
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Chennai
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Mumbai
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> Kolkata
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. What is the name of India's first solar mission launched in 2023?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Chandrayaan-3
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Aditya-L1
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Mangalyaan-2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Gaganyaan
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. Which country recently joined BRICS in 2024?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Saudi Arabia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Argentina
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Ethiopia
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. Who was appointed as the new RBI Governor in 2023?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Shaktikanta Das
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Urjit Patel
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Raghuram Rajan
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> D. Subbarao
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. Which Indian state recently became the first to implement a 'One Family, One Job' scheme?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Haryana
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Himachal Pradesh
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> Uttarakhand
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> Jammu and Kashmir
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. What is the name of India's first 5G testbed launched in 2023?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Bharat 5G
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> 5G-Sandbox
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> 5G-Ran
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> None of the above
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. Which Indian city was ranked as the world's most polluted city in 2023?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Delhi
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Mumbai
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Kolkata
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Chennai
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. Who won the Men's Singles title at Wimbledon 2023?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> Novak Djokovic
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> Carlos Alcaraz
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> Daniil Medvedev
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> Jannik Sinner
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. Which country recently launched its first indigenous aircraft carrier 'Fujian'?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Japan
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> South Korea
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> China
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Russia
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. What is the name of India's first semi-high speed train?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Gatimaan Express
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Vande Bharat Express
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Rajdhani Express
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Shatabdi Express
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. Which Indian state recently launched the 'Mukhyamantri Mahila Udyamita Abhiyan'?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> Rajasthan
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> Madhya Pradesh
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> Uttar Pradesh
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> Bihar
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. Who was appointed as the new Chief of Army Staff in 2023?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Manoj Pande
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Bipin Rawat
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> M.M. Naravane
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Dalbir Singh
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. Which country recently became the most populous country in the world?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> China
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> India
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> USA
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> Indonesia
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. What is the name of India's first indigenously developed anti-radiation missile?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Astra
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Rudram
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Brahmos
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Nag
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/playlist?list=PL4t_secZTPn6Chpu1_Hh99JpgYxMa6Hnc" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Current Affairs Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('currentAffairsCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('currentAffairsCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'a', q2: 'a', q3: 'b', q4: 'b', q5: 'a',
+                q6: 'b', q7: 'b', q8: 'b', q9: 'd', q10: 'a',
+                q11: 'a', q12: 'd', q13: 'a', q14: 'b', q15: 'c',
+                q16: 'b', q17: 'a', q18: 'a', q19: 'b', q20: 'b'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Justice D.Y. Chandrachud was appointed as the 50th Chief Justice of India in November 2022.",
+                q2: "India hosted the G20 Summit in September 2023 in New Delhi.",
+                q3: "Uttarakhand became the first Indian state to implement the Uniform Civil Code in 2023.",
+                q4: "INS Vikrant is India's first indigenous aircraft carrier, commissioned in September 2022.",
+                q5: "Turkey officially changed its name to Türkiye in 2022 at the United Nations.",
+                q6: "Narges Mohammadi, an Iranian activist, won the 2023 Nobel Peace Prize for her fight against oppression of women.",
+                q7: "Chennai hosted the 44th Chess Olympiad in 2022 (sometimes referred to as 2023 in news).",
+                q8: "Aditya-L1 is India's first solar mission, launched in September 2023.",
+                q9: "In 2024, BRICS expanded to include Saudi Arabia, Argentina, Egypt, Ethiopia, Iran and UAE.",
+                q10: "Shaktikanta Das was reappointed as RBI Governor for another term in 2023.",
+                q11: "Haryana implemented the 'One Family, One Job' scheme to provide employment to families.",
+                q12: "India's first 5G testbed was named differently than the options provided (correct name is '5G Test Bed').",
+                q13: "Delhi was ranked as the world's most polluted capital city for the fourth consecutive year in 2023.",
+                q14: "Carlos Alcaraz won his first Wimbledon title in 2023, defeating Novak Djokovic.",
+                q15: "China launched its third aircraft carrier 'Fujian', its first fully indigenous one, in 2022.",
+                q16: "Vande Bharat Express is India's first semi-high speed train, running at 160-180 kmph.",
+                q17: "Rajasthan launched the 'Mukhyamantri Mahila Udyamita Abhiyan' to empower women entrepreneurs.",
+                q18: "General Manoj Pande took over as the 29th Chief of Army Staff in April 2022.",
+                q19: "India surpassed China to become the world's most populous country in April 2023.",
+                q20: "Rudram is India's first indigenous anti-radiation missile developed by DRDO."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You're up-to-date with current affairs!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You're well-informed about recent events.";
+                } else if (percentage >= 50) {
+                    message += "Fair knowledge. Watch the tutorial to improve.";
+                } else {
+                    message += "Keep following the news! Watch the tutorial for updates.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#fdedec';
+                    this.style.borderColor = '#e74c3c';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

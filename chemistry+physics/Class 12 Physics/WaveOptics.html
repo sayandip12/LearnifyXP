@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Quiz - Wave Optics</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #009688;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .coin-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f1c40f;
+            color: #8e6e0b;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .coin-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #009688;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-left: 0;
+        }
+        
+        .option {
+            padding: 12px 15px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #e0f2f1;
+            border-color: #009688;
+        }
+        
+        .option input {
+            margin-right: 10px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0 30px;
+        }
+        
+        button {
+            padding: 14px 30px;
+            background-color: #009688;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #00796b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+        
+        #score-display {
+            text-align: center;
+            font-size: 20px;
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e0f2f1;
+            display: none;
+        }
+        
+        .coin-reward {
+            color: #f1c40f;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .video-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #00796b;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .video-link:hover {
+            background-color: #00695c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #009688;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 25px;
+            }
+            
+            .coin-display {
+                position: static;
+                margin-bottom: 20px;
+                display: inline-flex;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="coin-display">
+        <i class="fas fa-coins coin-icon"></i>
+        <span id="coin-count">0.0</span> coins
+    </div>
+
+    <div class="header">
+        <h1>Physics Quiz - Wave Optics</h1>
+        <p class="subtitle">Earn 0.5 coins for each correct answer!</p>
+    </div>
+    
+    <div class="quiz-container">
+        <div id="quiz-questions">
+            <!-- Question 1 -->
+            <div class="question" id="q1">
+                <h3>1. What is the phenomenon that proves light behaves as a wave?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q1" value="a"> Photoelectric effect
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="b"> Interference
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="c"> Compton scattering
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q1" value="d"> Blackbody radiation
+                    </label>
+                </div>
+                <div class="result" id="result1"></div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question" id="q2">
+                <h3>2. What is the condition for constructive interference in Young's double-slit experiment?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q2" value="a"> Path difference = nλ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="b"> Path difference = (n+½)λ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="c"> Phase difference = 90°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q2" value="d"> Phase difference = 180°
+                    </label>
+                </div>
+                <div class="result" id="result2"></div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question" id="q3">
+                <h3>3. What happens to the fringe width in Young's experiment if the slit separation is increased?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q3" value="a"> Increases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="b"> Decreases
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="c"> Remains same
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q3" value="d"> First increases then decreases
+                    </label>
+                </div>
+                <div class="result" id="result3"></div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question" id="q4">
+                <h3>4. What is the name of the pattern observed when light passes through a single slit?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q4" value="a"> Interference pattern
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="b"> Diffraction pattern
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="c"> Polarization pattern
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q4" value="d"> Dispersion pattern
+                    </label>
+                </div>
+                <div class="result" id="result4"></div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question" id="q5">
+                <h3>5. What principle explains why light bends around obstacles?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q5" value="a"> Huygens' principle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="b"> Fermat's principle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="c"> Rayleigh's principle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q5" value="d"> Snell's principle
+                    </label>
+                </div>
+                <div class="result" id="result5"></div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question" id="q6">
+                <h3>6. What is the condition for destructive interference in thin films?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q6" value="a"> 2μt = nλ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="b"> 2μt = (n+½)λ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="c"> μt = nλ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q6" value="d"> μt = (n+½)λ
+                    </label>
+                </div>
+                <div class="result" id="result6"></div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question" id="q7">
+                <h3>7. What phenomenon causes the splitting of white light into colors?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q7" value="a"> Interference
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="b"> Diffraction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="c"> Dispersion
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q7" value="d"> Polarization
+                    </label>
+                </div>
+                <div class="result" id="result7"></div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question" id="q8">
+                <h3>8. What optical instrument uses the principle of interference to measure small distances?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q8" value="a"> Telescope
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="b"> Microscope
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="c"> Interferometer
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q8" value="d"> Spectrometer
+                    </label>
+                </div>
+                <div class="result" id="result8"></div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question" id="q9">
+                <h3>9. What is the name of the central bright spot in a diffraction pattern?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q9" value="a"> Fresnel spot
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="b"> Poisson spot
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="c"> Arago spot
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q9" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result9"></div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question" id="q10">
+                <h3>10. What happens to diffraction pattern when wavelength increases?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q10" value="a"> Pattern becomes narrower
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="b"> Pattern becomes wider
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="c"> Pattern disappears
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q10" value="d"> No change occurs
+                    </label>
+                </div>
+                <div class="result" id="result10"></div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question" id="q11">
+                <h3>11. What is the condition for Brewster's angle?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q11" value="a"> Reflected and refracted rays are perpendicular
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="b"> Reflected ray is completely polarized
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="c"> tanθ<sub>B</sub> = n<sub>2</sub>/n<sub>1</sub>
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q11" value="d"> All of the above
+                    </label>
+                </div>
+                <div class="result" id="result11"></div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question" id="q12">
+                <h3>12. What phenomenon explains the blue color of the sky?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q12" value="a"> Rayleigh scattering
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="b"> Mie scattering
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="c"> Tyndall effect
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q12" value="d"> Raman scattering
+                    </label>
+                </div>
+                <div class="result" id="result12"></div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question" id="q13">
+                <h3>13. What is the resolving power of a telescope proportional to?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q13" value="a"> Wavelength of light
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="b"> Diameter of objective
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="c"> Focal length of eyepiece
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q13" value="d"> Magnification power
+                    </label>
+                </div>
+                <div class="result" id="result13"></div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question" id="q14">
+                <h3>14. What is the phase difference between two points separated by one wavelength?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q14" value="a"> 0°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="b"> 90°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="c"> 180°
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q14" value="d"> 360°
+                    </label>
+                </div>
+                <div class="result" id="result14"></div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question" id="q15">
+                <h3>15. What happens to the fringe width if the distance to the screen is doubled in Young's experiment?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q15" value="a"> Becomes half
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="b"> Doubles
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="c"> Quadruples
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q15" value="d"> Remains same
+                    </label>
+                </div>
+                <div class="result" id="result15"></div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question" id="q16">
+                <h3>16. What type of polarization occurs when light reflects off a non-metallic surface?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q16" value="a"> Circular polarization
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="b"> Elliptical polarization
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="c"> Linear polarization
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q16" value="d"> Random polarization
+                    </label>
+                </div>
+                <div class="result" id="result16"></div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question" id="q17">
+                <h3>17. What is the path difference for the first dark fringe in single-slit diffraction?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q17" value="a"> λ/2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="b"> λ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="c"> 3λ/2
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q17" value="d"> 2λ
+                    </label>
+                </div>
+                <div class="result" id="result17"></div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question" id="q18">
+                <h3>18. What principle is used to explain the rectilinear propagation of light?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q18" value="a"> Huygens' principle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="b"> Fermat's principle
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="c"> Principle of superposition
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q18" value="d"> Doppler principle
+                    </label>
+                </div>
+                <div class="result" id="result18"></div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question" id="q19">
+                <h3>19. What is the condition for maxima in a diffraction grating?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q19" value="a"> d sinθ = nλ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="b"> d sinθ = (n+½)λ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="c"> a sinθ = nλ
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q19" value="d"> a sinθ = (n+½)λ
+                    </label>
+                </div>
+                <div class="result" id="result19"></div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question" id="q20">
+                <h3>20. What phenomenon explains the colored patterns in soap bubbles?</h3>
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="q20" value="a"> Diffraction
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="b"> Thin-film interference
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="c"> Scattering
+                    </label>
+                    <label class="option">
+                        <input type="radio" name="q20" value="d"> Dispersion
+                    </label>
+                </div>
+                <div class="result" id="result20"></div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button id="submit-btn">Submit Answers</button>
+        </div>
+        
+        <div id="score-display"></div>
+        
+        <div class="video-container">
+            <a href="https://www.youtube.com/live/s-u1YoZNFTw?si=s2FOHspNv_9x6TYG" class="video-link" target="_blank">
+                <i class="fas fa-video"></i> Watch Wave Optics Tutorial
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize coin count from localStorage or 0
+            let coins = parseFloat(localStorage.getItem('physicsCoins')) || 0;
+            const coinDisplay = document.getElementById('coin-count');
+            coinDisplay.textContent = coins.toFixed(1);
+            
+            // Function to update coin display
+            function updateCoins(amount) {
+                coins += amount;
+                coinDisplay.textContent = coins.toFixed(1);
+                localStorage.setItem('physicsCoins', coins.toString());
+                
+                // Add animation when coins are added
+                if (amount > 0) {
+                    coinDisplay.parentElement.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        coinDisplay.parentElement.style.transform = 'scale(1)';
+                    }, 300);
+                }
+            }
+            
+            // Correct answers
+            const correctAnswers = {
+                q1: 'b', q2: 'a', q3: 'b', q4: 'b', q5: 'a',
+                q6: 'b', q7: 'c', q8: 'c', q9: 'd', q10: 'b',
+                q11: 'd', q12: 'a', q13: 'b', q14: 'd', q15: 'b',
+                q16: 'c', q17: 'b', q18: 'a', q19: 'a', q20: 'b'
+            };
+            
+            // Explanation for answers
+            const explanations = {
+                q1: "Interference is a wave phenomenon that demonstrates light's wave nature through constructive and destructive patterns.",
+                q2: "Constructive interference occurs when waves arrive in phase (path difference = nλ, where n is integer).",
+                q3: "Fringe width β = λD/d, so increasing slit separation (d) decreases fringe width.",
+                q4: "Single slit diffraction produces a characteristic pattern with a central maximum and alternating minima/maxima.",
+                q5: "Huygens' principle states each point on a wavefront acts as a source of secondary wavelets, explaining diffraction.",
+                q6: "Destructive interference in thin films occurs when optical path difference = (n+½)λ (2μt for normal incidence).",
+                q7: "Dispersion occurs because different wavelengths refract at different angles due to varying refractive indices.",
+                q8: "Interferometers (like Michelson's) use interference patterns to measure extremely small distances or wavelength.",
+                q9: "The central bright spot is called Poisson's spot (predicted), Arago's spot (observed), or Fresnel spot.",
+                q10: "Diffraction angle θ ≈ λ/a, so longer wavelengths produce wider diffraction patterns.",
+                q11: "At Brewster's angle, reflected light is completely polarized with r⊥ = n₂/n₁ = tanθ<sub>B</sub>.",
+                q12: "Rayleigh scattering (λ⁻⁴ dependence) scatters shorter blue wavelengths more than longer red wavelengths.",
+                q13: "Resolving power = D/1.22λ, where D is aperture diameter - larger telescopes resolve finer details.",
+                q14: "One wavelength corresponds to a full cycle (360° phase difference).",
+                q15: "Fringe width β = λD/d, so doubling D doubles the fringe separation.",
+                q16: "Reflection off non-metallic surfaces at non-Brewster angles produces partially linearly polarized light.",
+                q17: "First dark fringe occurs when path difference from edges = λ (destructive interference).",
+                q18: "Huygens' principle explains both diffraction and rectilinear propagation (via wavefront construction).",
+                q19: "Diffraction grating maxima occur at d sinθ = nλ, where d is grating spacing.",
+                q20: "Thin-film interference creates colors due to varying optical path differences for different wavelengths."
+            };
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const scoreDisplay = document.getElementById('score-display');
+            
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 20;
+                let unanswered = 0;
+                let coinsEarned = 0;
+                
+                // Check each question
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const questionId = 'q' + i;
+                    const selectedOption = document.querySelector(`input[name="${questionId}"]:checked`);
+                    const resultDiv = document.getElementById('result' + i);
+                    
+                    if (selectedOption) {
+                        if (selectedOption.value === correctAnswers[questionId]) {
+                            score++;
+                            coinsEarned += 0.5;
+                            resultDiv.innerHTML = `<strong>✓ Correct!</strong> ${explanations[questionId]} <span class="coin-reward">+0.5 coins</span>`;
+                            resultDiv.className = "result correct";
+                        } else {
+                            const correctLetter = correctAnswers[questionId].toUpperCase();
+                            resultDiv.innerHTML = `<strong>✗ Incorrect.</strong> The correct answer is <strong>${correctLetter}</strong>. ${explanations[questionId]}`;
+                            resultDiv.className = "result incorrect";
+                        }
+                        resultDiv.style.display = "block";
+                    } else {
+                        unanswered++;
+                        resultDiv.textContent = "You didn't answer this question.";
+                        resultDiv.className = "result incorrect";
+                        resultDiv.style.display = "block";
+                    }
+                }
+                
+                // Update coins
+                updateCoins(coinsEarned);
+                
+                // Display final score
+                const percentage = Math.round((score / totalQuestions) * 100);
+                let message = `<div style="margin-bottom:10px;font-size:24px;">Score: ${score}/${totalQuestions} (${percentage}%)</div>`;
+                message += `<div style="margin-bottom:15px;color:#f1c40f;font-weight:bold;">You earned ${coinsEarned.toFixed(1)} coins!</div>`;
+                
+                if (unanswered > 0) {
+                    message += `<div style="color:#e74c3c;margin-bottom:15px;">${unanswered} unanswered questions</div>`;
+                }
+                
+                if (percentage >= 90) {
+                    message += "Excellent! You've mastered wave optics!";
+                } else if (percentage >= 70) {
+                    message += "Good job! You understand most wave optics concepts.";
+                } else if (percentage >= 50) {
+                    message += "Fair understanding. Review the video tutorial.";
+                } else {
+                    message += "Keep practicing! Watch the tutorial for help.";
+                }
+                
+                scoreDisplay.innerHTML = message;
+                scoreDisplay.style.display = "block";
+                
+                // Scroll to score display
+                scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add event listeners to options for better UX
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input');
+                    radio.checked = true;
+                    
+                    // Highlight selected option
+                    const questionDiv = this.closest('.question');
+                    questionDiv.querySelectorAll('.option').forEach(opt => {
+                        opt.style.backgroundColor = '';
+                        opt.style.borderColor = '#ddd';
+                    });
+                    this.style.backgroundColor = '#e0f2f1';
+                    this.style.borderColor = '#009688';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
