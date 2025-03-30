@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> To-Do List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div class="container">
+        <h2>To-Do List</h2>
+        <input type="text" id="taskInput" placeholder="Add a new task">
+        <input type="time" id="taskTime">
+        <button onclick="addTask()">Add</button>
+        <ul id="taskList"></ul>
+    </div>
+    <script>
+        function addTask() {
+            let input = document.getElementById("taskInput");
+            let timeInput = document.getElementById("taskTime");
+            let taskText = input.value.trim();
+            let taskTime = timeInput.value;
+            if (taskText === "" || taskTime === "") return;
+            
+            let li = document.createElement("li");
+            let taskList = document.getElementById("taskList");
+            let taskNumber = taskList.children.length + 1;
+            
+            li.innerHTML = `<span>${taskNumber}.</span><input type="checkbox" onclick="toggleComplete(this)"><span>${taskText} <small>(${taskTime})</small></span> <button onclick="removeTask(this)">Delete</button>`;
+            taskList.appendChild(li);
+            input.value = "";
+            timeInput.value = "";
+        }
+        
+        function toggleComplete(checkbox) {
+            let task = checkbox.nextElementSibling;
+            task.classList.toggle("completed");
+        }
+        
+        function removeTask(button) {
+            let li = button.parentElement;
+            li.remove();
+            updateTaskNumbers();
+        }
+        
+        function updateTaskNumbers() {
+            let taskList = document.getElementById("taskList").children;
+            for (let i = 0; i < taskList.length; i++) {
+                taskList[i].firstElementChild.innerText = (i + 1) + ". ";
+            }
+        }
+    </script>
+</body>
+</html>

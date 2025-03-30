@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyFlow | Audio for Optimal Concentration</title>
+    <style>
+        :root {
+            --focus: #4CAF50;
+            --chill: #2196F3;
+            --energy: #FF5722;
+            --zen: #9C27B0;
+            --vocal: #009688;
+            --background: #121212;
+            --surface: #1E1E1E;
+            --surface-light: #252525;
+            --text-primary: #E0E0E0;
+            --text-secondary: #AAAAAA;
+            --border: #333333;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1A237E, #0D47A1);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        
+        .mode-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: var(--surface);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        .mode-tab {
+            padding: 0.8rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+        }
+        
+        .mode-tab.active, .mode-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            color: white;
+        }
+        
+        .focus-tab { background: var(--focus); }
+        .chill-tab { background: var(--chill); }
+        .energy-tab { background: var(--energy); }
+        .zen-tab { background: var(--zen); }
+        .vocal-tab { background: var(--vocal); }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        
+        .mode-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .mode-content.active {
+            display: block;
+        }
+        
+        .player-container {
+            text-align: center;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--surface-light);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            max-width: 800px;
+        }
+        
+        .audio-player {
+            width: 100%;
+            max-width: 500px;
+            margin: 1rem auto;
+            filter: invert(90%) hue-rotate(180deg) contrast(110%);
+        }
+        
+        .progress-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0.5rem auto;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--focus);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+        
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .track-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+            padding: 0 1rem;
+        }
+        
+        .track {
+            padding: 1.5rem;
+            background: var(--surface-light);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 4px solid var(--focus);
+        }
+        
+        .track:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            background: #2a2a2a;
+        }
+        
+        .track.chill { border-left-color: var(--chill); }
+        .track.energy { border-left-color: var(--energy); }
+        .track.zen { border-left-color: var(--zen); }
+        .track.vocal { border-left-color: var(--vocal); }
+        
+        .track h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-primary);
+        }
+        
+        .track p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .track-duration {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+        
+        .best-for {
+            display: inline-block;
+            margin-top: 0.8rem;
+            padding: 0.3rem 0.8rem;
+            background: rgba(76, 175, 80, 0.2);
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+        }
+        
+        .now-playing {
+            margin: 1rem 0;
+            font-size: 1.2rem;
+            color: var(--focus);
+            min-height: 1.5rem;
+        }
+        
+        .loop-control {
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .loop-toggle {
+            padding: 0.5rem 1rem;
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+        
+        .loop-toggle.active {
+            background: var(--focus);
+            color: white;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            background: var(--surface);
+            margin-top: 2rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .mode-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .track-list {
+                grid-template-columns: 1fr;
+                padding: 0;
+            }
+            
+            .player-container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>StudyFlow</h1>
+        <p>Audio scientifically organized for optimal concentration</p>
+    </header>
+    
+    <div class="mode-tabs">
+        <div class="mode-tab focus-tab active" onclick="showMode('focus')">Deep Focus</div>
+        <div class="mode-tab chill-tab" onclick="showMode('chill')">Chill & Steady</div>
+        <div class="mode-tab energy-tab" onclick="showMode('energy')">Energy Boost</div>
+        <div class="mode-tab zen-tab" onclick="showMode('zen')">Zen Mode</div>
+        <div class="mode-tab vocal-tab" onclick="showMode('vocal')">Vocal-Friendly</div>
+    </div>
+    
+    <div class="container">
+        <!-- Deep Focus Mode -->
+        <div id="focus-mode" class="mode-content active">
+            <div class="player-container">
+                <h2>Deep Focus Mode</h2>
+                <p>Minimalist compositions for intense concentration</p>
+                <div class="best-for">Best for: Math, Theory, Long Study Hours</div>
+                
+                <div class="now-playing" id="now-playing">Select a track to play</div>
+                <audio id="main-audio-player" class="audio-player" controls>
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="time-display">
+                    <span id="current-time">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+                <div class="loop-control">
+                    <span>Loop:</span>
+                    <button id="loop-toggle" class="loop-toggle active" onclick="toggleLoop()">ON</button>
+                </div>
+            </div>
+            
+            <div class="track-list">
+                <div class="track" onclick="playTrack('focus1')">
+                    <h3>Deep Focus Alpha Waves</h3>
+                    <p>Binaural beats to enhance concentration (30 min loop)</p>
+                    <div class="track-duration">Duration: Continuous</div>
+                    <div class="best-for">Math, Theory</div>
+                </div>
+                <div class="track" onclick="playTrack('focus2')">
+                    <h3>Classical Study Session</h3>
+                    <p>Mozart for improved cognitive performance (45 min loop)</p>
+                    <div class="track-duration">Duration: Continuous</div>
+                    <div class="best-for">Long Study Sessions</div>
+                </div>
+                <div class="track" onclick="playTrack('focus3')">
+                    <h3>Ambient Focus Soundscape</h3>
+                    <p>Minimalist sounds for sustained attention (60 min loop)</p>
+                    <div class="track-duration">Duration: Continuous</div>
+                    <div class="best-for">Problem Solving</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chill & Steady Mode -->
+        <div id="chill-mode" class="mode-content">
+            <div class="player-container">
+                <h2>Chill & Steady Mode</h2>
+                <p>Lo-fi beats and jazz for relaxed studying</p>
+                <div class="best-for">Best for: Reading, Writing, Revision</div>
+                
+                <div class="now-playing" id="now-playing">Select a track to play</div>
+                <audio id="main-audio-player" class="audio-player" controls>
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="time-display">
+                    <span id="current-time">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+                <div class="loop-control">
+                    <span>Loop:</span>
+                    <button id="loop-toggle" class="loop-toggle active" onclick="toggleLoop()">ON</button>
+                </div>
+            </div>
+            
+            <div class="track-list">
+                <div class="track chill" onclick="playTrack('chill1')">
+                    <h3>Lo-fi Study Session</h3>
+                    <p>Continuous lo-fi hip hop beats (1 hour loop)</p>
+                    <div class="track-duration">Duration: Continuous</div>
+                    <div class="best-for">Reading, Writing</div>
+                </div>
+                <div class="track chill" onclick="playTrack('chill2')">
+                    <h3>Jazz Study Companion</h3>
+                    <p>Smooth jazz for steady focus (45 min loop)</p>
+                    <div class="track-duration">Duration: Continuous</div>
+                    <div class="best-for">Creative Work</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Energy Boost Mode -->
+        <div id="energy-mode" class="mode-content">
+            <div class="player-container">
+                <h2>Energy Boost Mode</h2>
+                <p>Powerful music for motivation and intense focus</p>
+                <div class="best-for">Best for: Problem Solving, Last-Minute Prep</div>
+                
+                <div class="now-playing" id="now-playing">Select a track to play</div>
+                <audio id="main-audio-player" class="audio-player" controls>
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="time-display">
+                    <span id="current-time">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+                <div class="loop-control">
+                    <span>Loop:</span>
+                    <button id="loop-toggle" class="loop-toggle active" onclick="toggleLoop()">ON</button>
+                </div>
+            </div>
+            
+            <div class="track-list">
+                <div class="track energy" onclick="playTrack('energy1')">
+                    <h3>Epic Study Motivation</h3>
+                    <p>Powerful orchestral music for intense sessions (30 min loop)</p>
+                    <div class="track-duration">Duration: Continuous</div>
+                    <div class="best-for">Problem Solving</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Zen Mode -->
+        <div id="zen-mode" class="mode-content">
+            <div class="player-container">
+                <h2>Zen Mode</h2>
+                <p>Calming sounds for stress relief and meditation</p>
+                <div class="best-for">Best for: Anxiety, Pre-Exam Relaxation</div>
+                
+                <div class="now-playing" id="now-playing">Select a track to play</div>
+                <audio id="main-audio-player" class="audio-player" controls>
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="time-display">
+                    <span id="current-time">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+                <div class="loop-control">
+                    <span>Loop:</span>
+                    <button id="loop-toggle" class="loop-toggle active" onclick="toggleLoop()">ON</button>
+                </div>
+            </div>
+            
+            <div class="track-list">
+                <div class="track zen" onclick="playTrack('zen1')">
+                    <h3>Meditation Soundscape</h3>
+                    <p>Soothing tones for anxiety relief (20 min loop)</p>
+                    <div class="track-duration">Duration: Continuous</div>
+                    <div class="best-for">Stress Relief</div>
+                </div>
+                <div class="track zen" onclick="playTrack('zen2')">
+                    <h3>Nature Soundscape</h3>
+                    <p>Forest and rain sounds for relaxation (45 min loop)</p>
+                    <div class="track-duration">Duration: Continuous</div>
+                    <div class="best-for">Meditation</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vocal-Friendly Mode -->
+        <div id="vocal-mode" class="mode-content">
+            <div class="player-container">
+                <h2>Vocal-Friendly Mode</h2>
+                <p>Light vocals that don't distract from creative work</p>
+                <div class="best-for">Best for: Creative Subjects, Note-Taking</div>
+                
+                <div class="now-playing" id="now-playing">Select a track to play</div>
+                <audio id="main-audio-player" class="audio-player" controls>
+                    Your browser does not support the audio element.
+                </audio>
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="time-display">
+                    <span id="current-time">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+                <div class="loop-control">
+                    <span>Loop:</span>
+                    <button id="loop-toggle" class="loop-toggle active" onclick="toggleLoop()">ON</button>
+                </div>
+            </div>
+            
+            <div class="track-list">
+                <div class="track vocal" onclick="playTrack('vocal1')">
+                    <h3>Soft Vocal Study</h3>
+                    <p>Gentle vocal music for creative work (50 min loop)</p>
+                    <div class="track-duration">Duration: Continuous</div>
+                    <div class="best-for">Creative Work</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; <span id="current-year">2023</span> StudyFlow. Audio for Optimal Concentration</p>
+        <p>All audio tracks are from royalty-free sources</p>
+    </footer>
+    
+    <script>
+        // Audio database with reliable audio sources
+        const tracks = {
+            // Deep Focus Mode
+            focus1: {
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+                title: "Deep Focus Alpha Waves",
+                duration: "Continuous",
+                mode: "focus"
+            },
+            focus2: {
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+                title: "Classical Study Session",
+                duration: "Continuous",
+                mode: "focus"
+            },
+            focus3: {
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+                title: "Ambient Focus Soundscape",
+                duration: "Continuous",
+                mode: "focus"
+            },
+            
+            // Chill & Steady Mode
+            chill1: {
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+                title: "Lo-fi Study Session",
+                duration: "Continuous",
+                mode: "chill"
+            },
+            chill2: {
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+                title: "Jazz Study Companion",
+                duration: "Continuous",
+                mode: "chill"
+            },
+            
+            // Energy Boost Mode
+            energy1: {
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+                title: "Epic Study Motivation",
+                duration: "Continuous",
+                mode: "energy"
+            },
+            
+            // Zen Mode
+            zen1: {
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3",
+                title: "Meditation Soundscape",
+                duration: "Continuous",
+                mode: "zen"
+            },
+            zen2: {
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+                title: "Nature Soundscape",
+                duration: "Continuous",
+                mode: "zen"
+            },
+            
+            // Vocal-Friendly Mode
+            vocal1: {
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3",
+                title: "Soft Vocal Study",
+                duration: "Continuous",
+                mode: "vocal"
+            }
+        };
+
+        // Global references
+        const audioPlayer = document.getElementById('main-audio-player');
+        const nowPlayingElement = document.getElementById('now-playing');
+        const progressBar = document.getElementById('progress-bar');
+        const progressContainer = document.getElementById('progress-container');
+        const currentTimeElement = document.getElementById('current-time');
+        const durationElement = document.getElementById('duration');
+        const loopToggle = document.getElementById('loop-toggle');
+        const currentYearElement = document.getElementById('current-year');
+        
+        let currentTrackId = null;
+        let isSeeking = false;
+        let isLoopEnabled = true;
+
+        // Format time from seconds to MM:SS
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "0:00";
+            
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // Update progress bar and time display
+        function updateProgress() {
+            if (!isSeeking && audioPlayer.duration) {
+                const { currentTime, duration } = audioPlayer;
+                const progressPercent = (currentTime / duration) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+                currentTimeElement.textContent = formatTime(currentTime);
+                durationElement.textContent = formatTime(duration);
+            }
+        }
+
+        // Set progress when clicked on progress bar
+        function setProgress(e) {
+            if (!audioPlayer.duration) return;
+            
+            const width = this.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audioPlayer.duration;
+            audioPlayer.currentTime = (clickX / width) * duration;
+        }
+
+        // Toggle loop functionality
+        function toggleLoop() {
+            isLoopEnabled = !isLoopEnabled;
+            audioPlayer.loop = isLoopEnabled;
+            loopToggle.classList.toggle('active');
+            loopToggle.textContent = isLoopEnabled ? 'ON' : 'OFF';
+        }
+
+        // Show selected study mode
+        function showMode(mode) {
+            // Hide all mode contents
+            document.querySelectorAll('.mode-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Show selected mode
+            document.getElementById(`${mode}-mode`).classList.add('active');
+            
+            // Update active tab
+            document.querySelectorAll('.mode-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        // Play selected track
+        function playTrack(trackId) {
+            const track = tracks[trackId];
+            if (!track) return;
+
+            // Stop currently playing track if different
+            if (currentTrackId && currentTrackId !== trackId) {
+                audioPlayer.pause();
+                audioPlayer.currentTime = 0;
+            }
+
+            // Set new track
+            audioPlayer.src = track.url;
+            audioPlayer.loop = isLoopEnabled;
+            nowPlayingElement.textContent = `Now Playing: ${track.title}`;
+            durationElement.textContent = track.duration;
+            currentTrackId = trackId;
+
+            // Play the new track
+            const playPromise = audioPlayer.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Playback prevented:", error);
+                    nowPlayingElement.textContent = `Click play to listen: ${track.title}`;
+                });
+            }
+        }
+
+        // Initialize the audio player
+        function initAudioPlayer() {
+            // Set current year in footer
+            currentYearElement.textContent = new Date().getFullYear();
+            
+            // Initialize player
+            nowPlayingElement.textContent = "Click any track to play";
+            durationElement.textContent = "0:00";
+            audioPlayer.loop = isLoopEnabled;
+            
+            // Reset progress bar when track changes
+            audioPlayer.addEventListener('loadedmetadata', function() {
+                progressBar.style.width = '0%';
+                currentTimeElement.textContent = '0:00';
+                durationElement.textContent = formatTime(audioPlayer.duration);
+            });
+        }
+
+        // Event listeners
+        audioPlayer.addEventListener('timeupdate', updateProgress);
+        audioPlayer.addEventListener('ended', () => {
+            if (isLoopEnabled) {
+                audioPlayer.currentTime = 0;
+                audioPlayer.play();
+            } else {
+                progressBar.style.width = '0%';
+                currentTimeElement.textContent = '0:00';
+            }
+        });
+        audioPlayer.addEventListener('seeked', () => {
+            isSeeking = false;
+            updateProgress();
+        });
+        audioPlayer.addEventListener('seeking', () => {
+            isSeeking = true;
+        });
+        
+        progressContainer.addEventListener('click', setProgress);
+
+        // Initialize when page loads
+        window.addEventListener('DOMContentLoaded', initAudioPlayer);
+    </script>
+</body>
+</html>
